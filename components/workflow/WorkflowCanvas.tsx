@@ -88,10 +88,10 @@ export function WorkflowCanvas() {
 
   return (
     <div 
-      ref={reactFlowWrapper} 
-      className="w-full h-screen bg-gray-50"
-      onDrop={onDrop}
-      onDragOver={onDragOver}
+    ref={reactFlowWrapper} 
+    className="w-full h-full bg-gray-50" // ⚠️ Mudou de h-screen para h-full
+    onDrop={onDrop}
+    onDragOver={onDragOver}
     >
       <ReactFlow
         nodes={nodes}
