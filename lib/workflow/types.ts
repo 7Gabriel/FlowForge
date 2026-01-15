@@ -1,5 +1,7 @@
 // Tipos base do React Flow
 import { Node, Edge } from 'reactflow';
+import { NodeExecutionResult, NodeExecutionStatus } from './execution/types';
+
 
 // ========================================
 // Node Data Types
@@ -107,3 +109,135 @@ export interface ExecutionResult {
   data?: any;
   error?: string;
 }
+
+export interface BaseNodeDataWithExecution extends BaseNodeData {
+  executionStatus?: NodeExecutionStatus;
+  executionResult?: NodeExecutionResult;
+}
+
+import { useState, useCallback } from 'react';
+import { useReactFlow } from 'reactflow';
+import { WorkflowExecutor } from '@/lib/workflow/execution/executor';
+import {
+  WorkflowExecutionResult,
+  ExecutionStatus,
+  ExecutionConfig,
+} from '@/lib/workflow/execution/types';
+
+export function useWorkflowExecution() {
+  const { getNodes, getEdges, setNodes } = useReactFlow();
+  const [executionResult, setExecutionResult] = useState<WorkflowExecutionResult | null>(null);
+  const [isExecuting, setIsExecuting] = useState(false);
+
+  // ========================================
+  // Executar Workflow
+  // ========================================
+  const executeWorkflow = useCallback(
+    async (config?: Partial<ExecutionConfig>) => {
+      setIsExecuting(true);
+      setExecutionResult(null);
+
+      try {
+        const nodes = getNodes();
+        const edges = getEdges();
+
+        console.log('🚀 Starting workflow execution with', nodes.length, 'nodes');
+
+        // Resetar estado visual dos nodes
+        setNodes((nodes) =>
+          nodes.map((node) => ({
+            ...node,
+            data: {
+              ...node.data,
+              executionStatus: undefined,
+            },
+          }))
+        );
+
+        // Criar executor
+        const executor = new WorkflowExecutor(nodes, edges, {
+          mode: 'test', // Modo teste (simulado)
+          ...config,
+        });
+
+        // Executar
+        const result = await executor.execute();
+        setExecutionResult(result);
+
+        // Atualizar visual dos nodes com resultados
+        updateNodesWithResults(result);
+
+        return result;
+      } catch (error) {
+        console.error('❌ Execution failed:', error);
+        throw error;
+      } finally {
+        setIsExecuting(false);
+      }
+    },
+    [getNodes, getEdges, setNodes]
+  );
+
+  // ========================================
+  // Atualizar visual dos nodes
+  // ========================================
+  const updateNodesWithResults = useCallback(
+    (result: WorkflowExecutionResult) => {
+      setNodes((nodes) =>
+        nodes.map((node) => {
+          const nodeResult = result.nodeResults.find((r) => r.nodeId === node.id);
+          if (!nodeResult) {
+            return node;
+          }
+
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              executionStatus: nodeResult.status,
+              executionResult: nodeResult,
+            },
+          };
+        })
+      );
+    },
+    [setNodes]
+  );
+
+  // ========================================
+  // Limpar resultados
+  // ========================================
+  const clearResults = useCallback(() => {
+    setExecutionResult(null);
+    setNodes((nodes) =>
+      nodes.map((node) => ({
+        ...node,
+        data: {
+          ...node.data,
+          executionStatus: undefined,
+          executionResult: undefined,
+        },
+      }))
+    );
+  }, [setNodes]);
+
+  return {
+    executeWorkflow,
+    clearResults,
+    executionResult,
+    isExecuting,
+  };
+}
+
+
+export interface BaseNodeDataWithExecution extends BaseNodeData {
+  executionStatus?: NodeExecutionStatus;
+  executionResult?: NodeExecutionResult;
+}
+
+// Re-exportar types com execução
+export interface TriggerNodeDataWithExecution extends TriggerNodeData, BaseNodeDataWithExecution {}
+export interface LLMNodeDataWithExecution extends LLMNodeData, BaseNodeDataWithExecution {}
+export interface HTTPNodeDataWithExecution extends HTTPNodeData, BaseNodeDataWithExecution {}
+export interface ConditionNodeDataWithExecution extends ConditionNodeData, BaseNodeDataWithExecution {}
+export interface OutputNodeDataWithExecution extends OutputNodeData, BaseNodeDataWithExecution {}

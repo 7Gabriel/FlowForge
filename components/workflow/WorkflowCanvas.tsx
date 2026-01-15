@@ -13,6 +13,7 @@ import ReactFlow, {
   useEdgesState,
   OnConnect,
   NodeTypes,
+  EdgeTypes, // ⚠️ Novo
   ReactFlowInstance,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
@@ -22,8 +23,14 @@ import { LLMNode } from './nodes/LLMNode';
 import { HTTPNode } from './nodes/HTTPNode';
 import { ConditionNode } from './nodes/ConditionNode';
 import { OutputNode } from './nodes/OutputNode';
+import { C4Node } from '@/components/architecture/nodes/C4Node';
+import { AnimatedEdge } from '@/components/architecture/edges/AnimatedEdge'; // ⚠️ Novo
 import { NodeType } from '@/lib/workflow/types';
 import { getNodeTemplate } from '@/lib/workflow/node-templates';
+import { getC4Template } from '@/lib/architecture/c4-templates';
+import { C4NodeCategory } from '@/lib/architecture/c4-types';
+import { useAppMode } from '@/contexts/AppModeContext'; // ⚠️ Novo
+import { AppMode } from '@/lib/types'; // ⚠️ Novo
 
 const nodeTypes: NodeTypes = {
   [NodeType.TRIGGER]: TriggerNode,
@@ -31,6 +38,12 @@ const nodeTypes: NodeTypes = {
   [NodeType.HTTP]: HTTPNode,
   [NodeType.CONDITION]: ConditionNode,
   [NodeType.OUTPUT]: OutputNode,
+  'architecture': C4Node,
+};
+
+// ⚠️ NOVO: Edge Types
+const edgeTypes: EdgeTypes = {
+  'animated': AnimatedEdge,
 };
 
 const initialNodes: Node[] = [];
@@ -41,12 +54,21 @@ export function WorkflowCanvas() {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
+  const { mode } = useAppMode(); // ⚠️ Novo
 
   const onConnect: OnConnect = useCallback(
     (connection: Connection) => {
-      setEdges((eds) => addEdge(connection, eds));
+      console.log('✅ Connection created');
+      
+      // ⚠️ NOVO: Usar edge animado em Architecture mode
+      const newEdge = {
+        ...connection,
+        type: mode === AppMode.ARCHITECTURE ? 'animated' : 'default',
+      };
+      
+      setEdges((eds) => addEdge(newEdge, eds));
     },
-    [setEdges]
+    [mode, setEdges]
   );
 
   const onDragOver = useCallback((event: DragEvent) => {
@@ -58,14 +80,14 @@ export function WorkflowCanvas() {
     (event: DragEvent) => {
       event.preventDefault();
 
-      const type = event.dataTransfer.getData('application/reactflow') as NodeType;
-      
-      if (!type || !reactFlowInstance) {
+      if (!reactFlowInstance) {
         return;
       }
 
-      const template = getNodeTemplate(type);
-      if (!template) {
+      const nodeType = event.dataTransfer.getData('application/reactflow');
+      const isArchitecture = event.dataTransfer.getData('nodeType') === 'architecture';
+
+      if (!nodeType) {
         return;
       }
 
@@ -74,24 +96,54 @@ export function WorkflowCanvas() {
         y: event.clientY,
       });
 
-      const newNode: Node = {
-        id: `${type}-${Date.now()}`,
-        type,
-        position,
-        data: { ...template.defaultData },
-      };
+      let newNode: Node;
+
+      if (isArchitecture) {
+        const template = getC4Template(nodeType as C4NodeCategory);
+        if (!template) {
+          console.error('Architecture template not found:', nodeType);
+          return;
+        }
+
+        newNode = {
+          id: `arch-${Date.now()}`,
+          type: 'architecture',
+          position,
+          data: {
+            ...template.defaultData,
+            category: template.category,
+            level: template.level,
+            color: template.color,
+            icon: template.iconName,
+          },
+        };
+      } else {
+        const template = getNodeTemplate(nodeType as NodeType);
+        if (!template) {
+          console.error('Workflow template not found:', nodeType);
+          return;
+        }
+
+        newNode = {
+          id: `${nodeType}-${Date.now()}`,
+          type: nodeType,
+          position,
+          data: { ...template.defaultData },
+        };
+      }
 
       setNodes((nds) => nds.concat(newNode));
+      console.log('✅ Node created:', newNode);
     },
     [reactFlowInstance, setNodes]
   );
 
   return (
     <div 
-    ref={reactFlowWrapper} 
-    className="w-full h-full bg-gray-50" // ⚠️ Mudou de h-screen para h-full
-    onDrop={onDrop}
-    onDragOver={onDragOver}
+      ref={reactFlowWrapper} 
+      className="w-full h-full bg-gray-50"
+      onDrop={onDrop}
+      onDragOver={onDragOver}
     >
       <ReactFlow
         nodes={nodes}
@@ -101,20 +153,21 @@ export function WorkflowCanvas() {
         onConnect={onConnect}
         onInit={setReactFlowInstance}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes} // ⚠️ Novo
         fitView
-        // ========================================
-        // Configurações de Seleção
-        // ========================================
-        selectNodesOnDrag={false}  // Não selecionar durante drag
-        panOnDrag={[1, 2]}  // Pan com botão do meio ou direito
-        selectionOnDrag={false}  // Não criar selection box durante drag
-        // ========================================
+        selectNodesOnDrag={false}
+        panOnDrag={[1, 2]}
+        selectionOnDrag={false}
         className="bg-gray-50"
       >
         <Background color="#e5e7eb" gap={16} />
         <Controls />
         <MiniMap
           nodeColor={(node) => {
+            if (node.type === 'architecture') {
+              return (node.data as any).color || '#438DD5';
+            }
+            
             switch (node.type) {
               case NodeType.TRIGGER:
                 return '#10b981';

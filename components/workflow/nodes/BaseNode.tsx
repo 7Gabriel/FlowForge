@@ -1,6 +1,7 @@
 import React, { ReactNode, memo } from 'react';
-import { Handle, Position, NodeProps } from 'reactflow';
-import { LucideIcon } from 'lucide-react';
+import { Handle, Position } from 'reactflow';
+import { LucideIcon, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
+import { NodeExecutionStatus } from '@/lib/workflow/execution/types';
 
 interface BaseNodeProps {
   selected: boolean;
@@ -10,45 +11,74 @@ interface BaseNodeProps {
   hasInput?: boolean;
   hasOutput?: boolean;
   children?: ReactNode;
+  executionStatus?: NodeExecutionStatus; // ⚠️ Novo
 }
 
 const colorClasses = {
   green: {
     border: 'border-green-500',
-    borderSelected: 'border-green-500 ring-2 ring-green-200',
+    borderSelected: 'border-green-500 ring-4 ring-green-200',
     bg: 'bg-green-100',
     text: 'text-green-600',
     handle: '!bg-green-500',
   },
   purple: {
     border: 'border-purple-400',
-    borderSelected: 'border-purple-500 ring-2 ring-purple-200',
+    borderSelected: 'border-purple-500 ring-4 ring-purple-200',
     bg: 'bg-purple-100',
     text: 'text-purple-600',
     handle: '!bg-purple-500',
   },
   blue: {
     border: 'border-blue-400',
-    borderSelected: 'border-blue-500 ring-2 ring-blue-200',
+    borderSelected: 'border-blue-500 ring-4 ring-blue-200',
     bg: 'bg-blue-100',
     text: 'text-blue-600',
     handle: '!bg-blue-500',
   },
   amber: {
     border: 'border-amber-400',
-    borderSelected: 'border-amber-500 ring-2 ring-amber-200',
+    borderSelected: 'border-amber-500 ring-4 ring-amber-200',
     bg: 'bg-amber-100',
     text: 'text-amber-600',
     handle: '!bg-amber-500',
   },
   red: {
     border: 'border-red-400',
-    borderSelected: 'border-red-500 ring-2 ring-red-200',
+    borderSelected: 'border-red-500 ring-4 ring-red-200',
     bg: 'bg-red-100',
     text: 'text-red-600',
     handle: '!bg-red-500',
   },
 };
+
+// ========================================
+// Status Badge Component
+// ========================================
+function ExecutionStatusBadge({ status }: { status: NodeExecutionStatus }) {
+  switch (status) {
+    case NodeExecutionStatus.RUNNING:
+      return (
+        <div className="absolute -top-2 -right-2 bg-blue-500 rounded-full p-1 shadow-lg animate-pulse">
+          <Loader2 className="w-3 h-3 text-white animate-spin" />
+        </div>
+      );
+    case NodeExecutionStatus.SUCCESS:
+      return (
+        <div className="absolute -top-2 -right-2 bg-green-500 rounded-full p-1 shadow-lg">
+          <CheckCircle2 className="w-3 h-3 text-white" />
+        </div>
+      );
+    case NodeExecutionStatus.ERROR:
+      return (
+        <div className="absolute -top-2 -right-2 bg-red-500 rounded-full p-1 shadow-lg">
+          <XCircle className="w-3 h-3 text-white" />
+        </div>
+      );
+    default:
+      return null;
+  }
+}
 
 export const BaseNode = memo(({
   selected,
@@ -58,23 +88,32 @@ export const BaseNode = memo(({
   hasInput = false,
   hasOutput = false,
   children,
+  executionStatus, // ⚠️ Novo
 }: BaseNodeProps) => {
   const colors = colorClasses[color];
+
+  // Adicionar animação durante execução
+  const isRunning = executionStatus === NodeExecutionStatus.RUNNING;
 
   return (
     <div
       className={`
-        px-4 py-3 rounded-lg border-2 bg-white shadow-md min-w-[200px]
+        relative px-4 py-3 rounded-lg border-2 bg-white shadow-md min-w-[200px]
         ${selected ? colors.borderSelected : colors.border}
+        ${isRunning ? 'animate-pulse' : ''}
         transition-all duration-200
+        ${selected ? 'shadow-lg' : ''}
       `}
     >
+      {/* Execution Status Badge */}
+      {executionStatus && <ExecutionStatusBadge status={executionStatus} />}
+
       {/* Input Handle */}
       {hasInput && (
         <Handle
           type="target"
           position={Position.Left}
-          className={`w-3 h-3 ${colors.handle} border-2 border-white`}
+          className={`w-3 h-3 ${colors.handle} border-2 border-white transition-all`}
         />
       )}
 
@@ -100,7 +139,7 @@ export const BaseNode = memo(({
         <Handle
           type="source"
           position={Position.Right}
-          className={`w-3 h-3 ${colors.handle} border-2 border-white`}
+          className={`w-3 h-3 ${colors.handle} border-2 border-white transition-all`}
         />
       )}
     </div>

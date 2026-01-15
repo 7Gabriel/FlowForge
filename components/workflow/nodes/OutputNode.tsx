@@ -13,6 +13,7 @@ export const OutputNode = memo(({ data, selected }: NodeProps<OutputNodeData>) =
       color="red"
       hasInput={true}
       hasOutput={false}
+      executionStatus={(data as any).executionStatus} // ⚠️ Novo
     >
       <div>Type: {data.outputType}</div>
       {data.destination && (

@@ -13,6 +13,7 @@ export const LLMNode = memo(({ data, selected }: NodeProps<LLMNodeData>) => {
       color="purple"
       hasInput={true}
       hasOutput={true}
+      executionStatus={(data as any).executionStatus} // ⚠️ Novo
     >
       <div>{data.provider} • {data.model}</div>
       {data.prompt && (

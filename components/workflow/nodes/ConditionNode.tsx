@@ -1,17 +1,54 @@
 import { memo } from 'react';
 import { NodeProps, Handle, Position } from 'reactflow';
-import { GitBranch } from 'lucide-react';
+import { GitBranch, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
 import { ConditionNodeData } from '@/lib/workflow/types';
+import { NodeExecutionStatus } from '@/lib/workflow/execution/types';
+
+// ========================================
+// Status Badge Component (duplicado do BaseNode)
+// ========================================
+function ExecutionStatusBadge({ status }: { status: NodeExecutionStatus }) {
+  switch (status) {
+    case NodeExecutionStatus.RUNNING:
+      return (
+        <div className="absolute -top-2 -right-2 bg-blue-500 rounded-full p-1 shadow-lg animate-pulse z-10">
+          <Loader2 className="w-3 h-3 text-white animate-spin" />
+        </div>
+      );
+    case NodeExecutionStatus.SUCCESS:
+      return (
+        <div className="absolute -top-2 -right-2 bg-green-500 rounded-full p-1 shadow-lg z-10">
+          <CheckCircle2 className="w-3 h-3 text-white" />
+        </div>
+      );
+    case NodeExecutionStatus.ERROR:
+      return (
+        <div className="absolute -top-2 -right-2 bg-red-500 rounded-full p-1 shadow-lg z-10">
+          <XCircle className="w-3 h-3 text-white" />
+        </div>
+      );
+    default:
+      return null;
+  }
+}
 
 export const ConditionNode = memo(({ data, selected }: NodeProps<ConditionNodeData>) => {
+  const executionStatus = (data as any).executionStatus as NodeExecutionStatus | undefined;
+  const isRunning = executionStatus === NodeExecutionStatus.RUNNING;
+
   return (
     <div
       className={`
-        px-4 py-3 rounded-lg border-2 bg-white shadow-md min-w-[200px]
-        ${selected ? 'border-amber-500 ring-2 ring-amber-200' : 'border-amber-400'}
+        relative px-4 py-3 rounded-lg border-2 bg-white shadow-md min-w-[200px]
+        ${selected ? 'border-amber-500 ring-4 ring-amber-200' : 'border-amber-400'}
+        ${isRunning ? 'animate-pulse' : ''}
         transition-all duration-200
+        ${selected ? 'shadow-lg' : ''}
       `}
     >
+      {/* Execution Status Badge */}
+      {executionStatus && <ExecutionStatusBadge status={executionStatus} />}
+
       {/* Input Handle */}
       <Handle
         type="target"

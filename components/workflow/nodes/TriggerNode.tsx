@@ -12,6 +12,7 @@ export const TriggerNode = memo(({ data, selected }: NodeProps<TriggerNodeData>)
       label={data.label}
       color="green"
       hasOutput={true}
+      executionStatus={(data as any).executionStatus} // ⚠️ Novo
     >
       <div>Type: {data.triggerType}</div>
       {data.description && (

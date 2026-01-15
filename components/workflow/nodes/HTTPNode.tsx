@@ -13,6 +13,7 @@ export const HTTPNode = memo(({ data, selected }: NodeProps<HTTPNodeData>) => {
       color="blue"
       hasInput={true}
       hasOutput={true}
+      executionStatus={(data as any).executionStatus}
     >
       <div className="flex items-center gap-1">
         <span className="font-semibold text-blue-600">{data.method}</span>

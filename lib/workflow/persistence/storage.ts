@@ -1,12 +1,22 @@
 import { SerializedWorkflow, WorkflowListItem, STORAGE_KEY_PREFIX, STORAGE_KEY_LIST } from './types';
 
 // ========================================
+// Helper: Verificar se está no browser
+// ========================================
+const isBrowser = typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
+
+// ========================================
 // LocalStorage Wrapper com Type Safety
 // ========================================
 
 class WorkflowStorage {
   // Salvar workflow
   save(workflow: SerializedWorkflow): void {
+    if (!isBrowser) {
+      console.warn('localStorage not available (SSR)');
+      return;
+    }
+
     try {
       const key = `${STORAGE_KEY_PREFIX}${workflow.metadata.id}`;
       localStorage.setItem(key, JSON.stringify(workflow));
@@ -20,6 +30,11 @@ class WorkflowStorage {
 
   // Carregar workflow por ID
   load(workflowId: string): SerializedWorkflow | null {
+    if (!isBrowser) {
+      console.warn('localStorage not available (SSR)');
+      return null;
+    }
+
     try {
       const key = `${STORAGE_KEY_PREFIX}${workflowId}`;
       const data = localStorage.getItem(key);
@@ -39,6 +54,11 @@ class WorkflowStorage {
 
   // Deletar workflow
   delete(workflowId: string): void {
+    if (!isBrowser) {
+      console.warn('localStorage not available (SSR)');
+      return;
+    }
+
     try {
       const key = `${STORAGE_KEY_PREFIX}${workflowId}`;
       localStorage.removeItem(key);
@@ -52,6 +72,11 @@ class WorkflowStorage {
 
   // Listar todos os workflows
   list(): WorkflowListItem[] {
+    if (!isBrowser) {
+      console.warn('localStorage not available (SSR)');
+      return [];
+    }
+
     try {
       const data = localStorage.getItem(STORAGE_KEY_LIST);
       if (!data) {
@@ -66,6 +91,8 @@ class WorkflowStorage {
 
   // Atualizar lista de workflows (metadata)
   private updateWorkflowList(workflow: SerializedWorkflow): void {
+    if (!isBrowser) return;
+
     const list = this.list();
     const existingIndex = list.findIndex((item) => item.id === workflow.metadata.id);
 
@@ -92,6 +119,8 @@ class WorkflowStorage {
 
   // Remover da lista
   private removeFromWorkflowList(workflowId: string): void {
+    if (!isBrowser) return;
+
     const list = this.list();
     const filtered = list.filter((item) => item.id !== workflowId);
     localStorage.setItem(STORAGE_KEY_LIST, JSON.stringify(filtered));
@@ -99,6 +128,11 @@ class WorkflowStorage {
 
   // Limpar tudo (útil para debug)
   clear(): void {
+    if (!isBrowser) {
+      console.warn('localStorage not available (SSR)');
+      return;
+    }
+
     const list = this.list();
     list.forEach((item) => {
       localStorage.removeItem(`${STORAGE_KEY_PREFIX}${item.id}`);
