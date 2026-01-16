@@ -11,8 +11,8 @@ export function useArchitectureNode() {
   // Listen to selection changes
   useOnSelectionChange({
     onChange: ({ nodes }) => {
-      // ⚠️ IMPORTANTE: Só pegar nodes architecture
-      if (nodes.length === 1 && nodes[0].type === 'architecture') {
+      // ⚠️ CORRIGIR: Aceitar tanto 'architecture' quanto 'group'
+      if (nodes.length === 1 && (nodes[0].type === 'architecture' || nodes[0].type === 'group')) {
         setSelectedNode(nodes[0] as Node<ArchitectureNodeData>);
       } else {
         setSelectedNode(null);

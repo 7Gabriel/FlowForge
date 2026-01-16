@@ -13,8 +13,9 @@ import ReactFlow, {
   useEdgesState,
   OnConnect,
   NodeTypes,
-  EdgeTypes, // ⚠️ Novo
+  EdgeTypes,
   ReactFlowInstance,
+  MarkerType, // ⚠️ Novo
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 
@@ -24,13 +25,17 @@ import { HTTPNode } from './nodes/HTTPNode';
 import { ConditionNode } from './nodes/ConditionNode';
 import { OutputNode } from './nodes/OutputNode';
 import { C4Node } from '@/components/architecture/nodes/C4Node';
-import { AnimatedEdge } from '@/components/architecture/edges/AnimatedEdge'; // ⚠️ Novo
+import { GroupNode } from '@/components/architecture/nodes/GroupNode';
+import { AnimatedEdge } from '@/components/architecture/edges/AnimatedEdge';
 import { NodeType } from '@/lib/workflow/types';
 import { getNodeTemplate } from '@/lib/workflow/node-templates';
 import { getC4Template } from '@/lib/architecture/c4-templates';
-import { C4NodeCategory } from '@/lib/architecture/c4-types';
-import { useAppMode } from '@/contexts/AppModeContext'; // ⚠️ Novo
-import { AppMode } from '@/lib/types'; // ⚠️ Novo
+import { getGroupTemplate } from '@/lib/architecture/group-templates';
+import { C4NodeCategory, GroupStyle } from '@/lib/architecture/c4-types';
+import { useAppMode } from '@/contexts/AppModeContext';
+import { AppMode } from '@/lib/types';
+import { EditableEdge } from '@/components/architecture/edges/EditableEdge'; // ⚠️ Novo
+
 
 const nodeTypes: NodeTypes = {
   [NodeType.TRIGGER]: TriggerNode,
@@ -39,31 +44,80 @@ const nodeTypes: NodeTypes = {
   [NodeType.CONDITION]: ConditionNode,
   [NodeType.OUTPUT]: OutputNode,
   'architecture': C4Node,
+  'group': GroupNode,
 };
 
-// ⚠️ NOVO: Edge Types
 const edgeTypes: EdgeTypes = {
   'animated': AnimatedEdge,
+  'editable': EditableEdge, // ⚠️ Novo
 };
 
 const initialNodes: Node[] = [];
 const initialEdges: Edge[] = [];
+
+// ⚠️ NOVO: Default edge options com setas
+const defaultEdgeOptions = {
+  type: 'smoothstep',
+  markerEnd: {
+    type: MarkerType.ArrowClosed,
+    width: 20,
+    height: 20,
+    color: '#94A3B8',
+  },
+  style: {
+    strokeWidth: 2,
+    stroke: '#94A3B8',
+  },
+};
 
 export function WorkflowCanvas() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
-  const { mode } = useAppMode(); // ⚠️ Novo
+  const { mode } = useAppMode();
 
   const onConnect: OnConnect = useCallback(
     (connection: Connection) => {
       console.log('✅ Connection created');
       
-      // ⚠️ NOVO: Usar edge animado em Architecture mode
       const newEdge = {
         ...connection,
-        type: mode === AppMode.ARCHITECTURE ? 'animated' : 'default',
+        type: mode === AppMode.ARCHITECTURE ? 'editable' : 'smoothstep',
+        animated: false, // Animação controlada pelo edgeStyle
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+          width: 20,
+          height: 20,
+          color: mode === AppMode.ARCHITECTURE ? '#3B82F6' : '#94A3B8',
+        },
+        style: {
+          strokeWidth: 2,
+          stroke: mode === AppMode.ARCHITECTURE ? '#3B82F6' : '#94A3B8',
+        },
+        data: {
+          label: '',
+          edgeStyle: 'dashed' as const, // ⚠️ Estilo padrão
+          onLabelChange: (edgeId: string, newLabel: string) => {
+            setEdges((eds) =>
+              eds.map((edge) =>
+                edge.id === edgeId
+                  ? { ...edge, data: { ...edge.data, label: newLabel } }
+                  : edge
+              )
+            );
+          },
+          // ⚠️ NOVO: Handler para mudar estilo
+          onStyleChange: (edgeId: string, newStyle: string) => {
+            setEdges((eds) =>
+              eds.map((edge) =>
+                edge.id === edgeId
+                  ? { ...edge, data: { ...edge.data, edgeStyle: newStyle } }
+                  : edge
+              )
+            );
+          },
+        },
       };
       
       setEdges((eds) => addEdge(newEdge, eds));
@@ -85,7 +139,7 @@ export function WorkflowCanvas() {
       }
 
       const nodeType = event.dataTransfer.getData('application/reactflow');
-      const isArchitecture = event.dataTransfer.getData('nodeType') === 'architecture';
+      const dragType = event.dataTransfer.getData('nodeType');
 
       if (!nodeType) {
         return;
@@ -98,7 +152,33 @@ export function WorkflowCanvas() {
 
       let newNode: Node;
 
-      if (isArchitecture) {
+      if (dragType === 'group') {
+        const template = getGroupTemplate(nodeType as GroupStyle);
+        if (!template) {
+          console.error('Group template not found:', nodeType);
+          return;
+        }
+
+        newNode = {
+          id: `group-${Date.now()}`,
+          type: 'group',
+          position,
+          data: {
+            label: template.label,
+            description: template.description,
+            color: template.color,
+            borderStyle: template.borderStyle,
+            borderWidth: template.borderWidth,
+            backgroundColor: template.backgroundColor,
+            category: 'group',
+          },
+          style: {
+            width: 400,
+            height: 300,
+            zIndex: -1,
+          },
+        };
+      } else if (dragType === 'architecture') {
         const template = getC4Template(nodeType as C4NodeCategory);
         if (!template) {
           console.error('Architecture template not found:', nodeType);
@@ -115,6 +195,10 @@ export function WorkflowCanvas() {
             level: template.level,
             color: template.color,
             icon: template.iconName,
+          },
+          style: {
+            width: 180,
+            height: 140,
           },
         };
       } else {
@@ -153,7 +237,8 @@ export function WorkflowCanvas() {
         onConnect={onConnect}
         onInit={setReactFlowInstance}
         nodeTypes={nodeTypes}
-        edgeTypes={edgeTypes} // ⚠️ Novo
+        edgeTypes={edgeTypes}
+        defaultEdgeOptions={defaultEdgeOptions} // ⚠️ Novo
         fitView
         selectNodesOnDrag={false}
         panOnDrag={[1, 2]}
@@ -164,6 +249,10 @@ export function WorkflowCanvas() {
         <Controls />
         <MiniMap
           nodeColor={(node) => {
+            if (node.type === 'group') {
+              return (node.data as any).color || '#607D8B';
+            }
+            
             if (node.type === 'architecture') {
               return (node.data as any).color || '#438DD5';
             }

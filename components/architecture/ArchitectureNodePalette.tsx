@@ -1,10 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Search, ChevronDown, ChevronRight } from 'lucide-react';
+import { Search, ChevronDown, ChevronRight, Box } from 'lucide-react';
 import { C4Level } from '@/lib/architecture/c4-types';
 import { c4Templates, getTemplatesByLevel } from '@/lib/architecture/c4-templates';
+import { groupTemplates, GroupTemplate } from '@/lib/architecture/group-templates'; // ⚠️ Novo
 import { ArchitectureNodeItem } from './ArchitectureNodeItem';
+import { GroupNodeItem } from './GroupNodeItem'; // ⚠️ Vamos criar
 
 const levelLabels: Record<C4Level, string> = {
   [C4Level.CONTEXT]: 'Context',
@@ -25,6 +27,7 @@ export function ArchitectureNodePalette() {
   const [expandedLevels, setExpandedLevels] = useState<Set<C4Level>>(
     new Set([C4Level.CONTEXT, C4Level.CONTAINER])
   );
+  const [expandedGroups, setExpandedGroups] = useState(true); // ⚠️ Novo
 
   const toggleLevel = (level: C4Level) => {
     setExpandedLevels((prev) => {
@@ -42,7 +45,13 @@ export function ArchitectureNodePalette() {
   const filteredTemplates = c4Templates.filter((template) =>
     template.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
     template.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    template.technology?.toLowerCase().includes(searchTerm.toLowerCase())
+    template.defaultData.technology?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // ⚠️ Novo: Filtrar groups
+  const filteredGroups = groupTemplates.filter((template) =>
+    template.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    template.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Agrupar por level
@@ -78,8 +87,47 @@ export function ArchitectureNodePalette() {
         </div>
       </div>
 
-      {/* C4 Levels */}
+      {/* Content */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
+        {/* ⚠️ NOVO: Groups Section */}
+        {filteredGroups.length > 0 && (
+          <div>
+            <button
+              onClick={() => setExpandedGroups(!expandedGroups)}
+              className="flex items-start gap-2 w-full text-left mb-2 hover:bg-gray-50 p-2 rounded transition-colors"
+            >
+              <div className="mt-0.5">
+                {expandedGroups ? (
+                  <ChevronDown className="w-4 h-4 text-gray-600" />
+                ) : (
+                  <ChevronRight className="w-4 h-4 text-gray-600" />
+                )}
+              </div>
+              <div className="flex-1">
+                <div className="font-semibold text-sm text-gray-800 flex items-center gap-2">
+                  <Box className="w-4 h-4" />
+                  Groups / Containers
+                  <span className="text-xs text-gray-400 font-normal">
+                    {filteredGroups.length}
+                  </span>
+                </div>
+                <div className="text-xs text-gray-500 mt-0.5">
+                  Visual grouping containers
+                </div>
+              </div>
+            </button>
+
+            {expandedGroups && (
+              <div className="space-y-2 ml-6">
+                {filteredGroups.map((template) => (
+                  <GroupNodeItem key={template.style} template={template} />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* C4 Levels (código anterior permanece igual) */}
         {Object.values(C4Level).map((level) => {
           const templates = groupedByLevel[level] || [];
           const isExpanded = expandedLevels.has(level);
@@ -88,7 +136,6 @@ export function ArchitectureNodePalette() {
 
           return (
             <div key={level}>
-              {/* Level Header */}
               <button
                 onClick={() => toggleLevel(level)}
                 className="flex items-start gap-2 w-full text-left mb-2 hover:bg-gray-50 p-2 rounded transition-colors"
@@ -113,7 +160,6 @@ export function ArchitectureNodePalette() {
                 </div>
               </button>
 
-              {/* Level Items */}
               {isExpanded && (
                 <div className="space-y-2 ml-6">
                   {templates.map((template) => (
@@ -126,7 +172,7 @@ export function ArchitectureNodePalette() {
         })}
 
         {/* Empty State */}
-        {filteredTemplates.length === 0 && (
+        {filteredTemplates.length === 0 && filteredGroups.length === 0 && (
           <div className="text-center py-8 text-gray-400">
             <Search className="w-8 h-8 mx-auto mb-2 opacity-50" />
             <p className="text-sm">No components found</p>

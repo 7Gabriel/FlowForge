@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { EdgeProps, getBezierPath } from 'reactflow';
+import { EdgeProps, getBezierPath, EdgeLabelRenderer } from 'reactflow';
 
 export const AnimatedEdge = memo(({
   id,
@@ -13,7 +13,7 @@ export const AnimatedEdge = memo(({
   markerEnd,
   selected,
 }: EdgeProps) => {
-  const [edgePath] = getBezierPath({
+  const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
     sourceY,
     sourcePosition,
@@ -34,11 +34,11 @@ export const AnimatedEdge = memo(({
         }}
         className="react-flow__edge-path"
         d={edgePath}
-        markerEnd={markerEnd}
+        markerEnd={markerEnd} // ⚠️ Seta
         strokeDasharray="5,5"
       />
 
-      {/* ⚠️ Animated Overlay (fluxo animado) */}
+      {/* Animated Overlay (fluxo animado) */}
       <path
         style={{
           strokeWidth: 2,
@@ -49,6 +49,7 @@ export const AnimatedEdge = memo(({
         d={edgePath}
         strokeDasharray="5,5"
         strokeDashoffset="0"
+        markerEnd={markerEnd} // ⚠️ Seta na animação também
       >
         <animate
           attributeName="stroke-dashoffset"

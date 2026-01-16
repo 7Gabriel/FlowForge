@@ -131,3 +131,21 @@ export enum C4Level {
       updatedAt: string;
     };
   }
+
+  export interface GroupNodeData {
+    label: string;
+    description?: string;
+    color: string;
+    borderStyle: 'dashed' | 'solid' | 'dotted';
+    borderWidth: number;
+    backgroundColor?: string;
+    category: 'group';
+  }
+  
+  export enum GroupStyle {
+    ORCHESTRATOR = 'orchestrator',      // Laranja tracejado (Step Functions)
+    SAGA = 'saga',                       // Roxo tracejado
+    BOUNDED_CONTEXT = 'bounded-context', // Azul tracejado (DDD)
+    SYSTEM = 'system',                   // Verde tracejado
+    CUSTOM = 'custom',                   // Customizável
+  }
