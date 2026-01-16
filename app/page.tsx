@@ -5,7 +5,7 @@ import { WorkflowCanvas } from '@/components/workflow/WorkflowCanvas';
 import { NodePalette } from '@/components/workflow/toolbar/NodePalette';
 import { ArchitectureNodePalette } from '@/components/architecture/ArchitectureNodePalette';
 import { PropertiesPanel } from '@/components/workflow/properties/PropertiesPanel';
-import { ArchitecturePropertiesPanel } from '@/components/architecture/properties/ArchitecturePropertiesPanel'; // ⚠️ Novo
+import { ArchitecturePropertiesPanel } from '@/components/architecture/properties/ArchitecturePropertiesPanel';
 import { ExecutionPanel } from '@/components/workflow/execution/ExecutionPanel';
 import { Toolbar } from '@/components/workflow/toolbar/Toolbar';
 import { useWorkflowExecution } from '@/contexts/WorkflowExecutionContext';
@@ -16,11 +16,13 @@ function WorkflowContent() {
   const { executionResult, isExecuting } = useWorkflowExecution();
   const { mode } = useAppMode();
 
+  const hasExecutionResult = executionResult !== null || isExecuting;
+
   return (
     <main className="flex w-full h-screen">
       <Toolbar />
       <div className="flex flex-1 pt-[57px]">
-        {/* Node Palette (conditional) */}
+        {/* Node Palette - Condicional por Mode */}
         {mode === AppMode.WORKFLOW ? (
           <NodePalette />
         ) : (
@@ -32,15 +34,15 @@ function WorkflowContent() {
           <WorkflowCanvas />
         </div>
         
-        {/* Properties Panel (conditional) */}
+        {/* Properties Panel - SEMPRE VISÍVEL por Mode */}
         {mode === AppMode.WORKFLOW ? (
           <PropertiesPanel />
         ) : (
-          <ArchitecturePropertiesPanel /> // ⚠️ Novo
+          <ArchitecturePropertiesPanel />
         )}
         
-        {/* Execution Panel (only for Workflow mode) */}
-        {mode === AppMode.WORKFLOW && (
+        {/* Execution Panel - Só aparece quando há resultado (Workflow only) */}
+        {mode === AppMode.WORKFLOW && hasExecutionResult && (
           <ExecutionPanel result={executionResult} isExecuting={isExecuting} />
         )}
       </div>

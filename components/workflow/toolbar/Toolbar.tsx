@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import { useReactFlow } from 'reactflow';
 import { Button } from '@/components/ui/button';
 import {
   Save,
@@ -12,7 +13,10 @@ import {
   FileJson,
   Square,
   Loader2,
-  Image, // ⚠️ Novo
+  Image,
+  Edit2,
+  Check,
+  X,
 } from 'lucide-react';
 import { useWorkflowPersistence } from '@/hooks/useWorkflowPersistence';
 import { useWorkflowExecution } from '@/contexts/WorkflowExecutionContext';
@@ -22,9 +26,10 @@ import { AppMode } from '@/lib/types';
 import { WorkflowDialog } from './WorkflowDialog';
 import { ConfirmDialog } from './ConfirmDialog';
 import { ModeSwitcher } from '@/components/toolbar/ModeSwitcher';
-import { ExportImageDialog } from './ExportImageDialog'; // ⚠️ Novo
+import { ExportImageDialog } from './ExportImageDialog';
 
 export function Toolbar() {
+  const { setNodes, setEdges } = useReactFlow();
   const {
     saveWorkflow,
     loadWorkflow,
@@ -32,11 +37,14 @@ export function Toolbar() {
     listWorkflows,
     exportToFile,
     importFromFile,
-    clearWorkflow,
   } = useWorkflowPersistence();
 
-  const { executeWorkflow, clearResults, isExecuting } = useWorkflowExecution();
-  const { status: simulationStatus, startSimulation, resetSimulation } = useArchitectureSimulation();
+  const { clearResults, isExecuting } = useWorkflowExecution();
+  const { 
+    status: simulationStatus, 
+    startSimulation, 
+    resetSimulation 
+  } = useArchitectureSimulation();
   const { mode } = useAppMode();
 
   const [currentWorkflowId, setCurrentWorkflowId] = useState<string | null>(null);
@@ -44,9 +52,14 @@ export function Toolbar() {
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [showLoadDialog, setShowLoadDialog] = useState(false);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
-  const [showExportImageDialog, setShowExportImageDialog] = useState(false); // ⚠️ Novo
+  const [showExportImageDialog, setShowExportImageDialog] = useState(false);
 
-  // ... (todos os handlers anteriores permanecem iguais)
+  // ⚠️ NOVO: Estado para edição de título
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [editedTitle, setEditedTitle] = useState(currentWorkflowName);
+  const titleInputRef = useRef<HTMLInputElement>(null);
+
+  // ... (handlers anteriores permanecem iguais)
 
   const handleSave = (name: string, description: string) => {
     try {
@@ -69,6 +82,7 @@ export function Toolbar() {
       const metadata = loadWorkflow(workflowId);
       setCurrentWorkflowId(metadata.id);
       setCurrentWorkflowName(metadata.name);
+      setEditedTitle(metadata.name);
       console.log('✅ Workflow loaded successfully');
     } catch (error) {
       console.error('❌ Failed to load workflow:', error);
@@ -82,6 +96,7 @@ export function Toolbar() {
       if (workflowId === currentWorkflowId) {
         setCurrentWorkflowId(null);
         setCurrentWorkflowName('Untitled Workflow');
+        setEditedTitle('Untitled Workflow');
       }
       console.log('✅ Workflow deleted successfully');
     } catch (error) {
@@ -107,6 +122,7 @@ export function Toolbar() {
       const metadata = await importFromFile();
       setCurrentWorkflowId(metadata.id);
       setCurrentWorkflowName(metadata.name);
+      setEditedTitle(metadata.name);
       console.log('✅ Workflow imported successfully');
     } catch (error) {
       console.error('❌ Failed to import workflow:', error);
@@ -127,12 +143,57 @@ export function Toolbar() {
   };
 
   const handleClear = () => {
-    clearWorkflow();
+    console.log('🧹 Clearing everything...');
+
+    setNodes([]);
+    setEdges([]);
     clearResults();
+    resetSimulation();
     setCurrentWorkflowId(null);
     setCurrentWorkflowName('Untitled Workflow');
+    setEditedTitle('Untitled Workflow');
     setShowClearConfirm(false);
-    console.log('✅ Canvas cleared');
+
+    // Forçar re-render
+    setTimeout(() => {
+      setNodes([]);
+      setEdges([]);
+    }, 100);
+
+    console.log('✅ Canvas cleared completely');
+  };
+
+  // ========================================
+  // ⚠️ NOVO: Title Editing Handlers
+  // ========================================
+  const handleStartEditTitle = () => {
+    setIsEditingTitle(true);
+    setEditedTitle(currentWorkflowName);
+    setTimeout(() => titleInputRef.current?.focus(), 0);
+  };
+
+  const handleSaveTitle = () => {
+    const trimmedTitle = editedTitle.trim();
+    if (trimmedTitle) {
+      setCurrentWorkflowName(trimmedTitle);
+      console.log('✅ Title updated:', trimmedTitle);
+    } else {
+      setEditedTitle(currentWorkflowName);
+    }
+    setIsEditingTitle(false);
+  };
+
+  const handleCancelEditTitle = () => {
+    setEditedTitle(currentWorkflowName);
+    setIsEditingTitle(false);
+  };
+
+  const handleTitleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSaveTitle();
+    } else if (e.key === 'Escape') {
+      handleCancelEditTitle();
+    }
   };
 
   return (
@@ -141,18 +202,57 @@ export function Toolbar() {
         <div className="flex items-center justify-between">
           {/* Left */}
           <div className="flex items-center gap-4">
+            {/* ⚠️ NOVO: Título Editável */}
             <div className="flex items-center gap-2">
               <FileJson className="w-5 h-5 text-gray-400" />
-              <h1 className="text-lg font-semibold text-gray-800">
-                {currentWorkflowName}
-              </h1>
+              {isEditingTitle ? (
+                <div className="flex items-center gap-2">
+                  <input
+                    ref={titleInputRef}
+                    type="text"
+                    value={editedTitle}
+                    onChange={(e) => setEditedTitle(e.target.value)}
+                    onKeyDown={handleTitleKeyDown}
+                    className="text-lg font-semibold text-gray-800 border border-blue-500 rounded px-2 py-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style={{ width: `${Math.max(editedTitle.length, 10)}ch` }}
+                  />
+                  <button
+                    onClick={handleSaveTitle}
+                    className="p-1 hover:bg-green-100 rounded transition-colors"
+                    title="Save"
+                  >
+                    <Check className="w-4 h-4 text-green-600" />
+                  </button>
+                  <button
+                    onClick={handleCancelEditTitle}
+                    className="p-1 hover:bg-red-100 rounded transition-colors"
+                    title="Cancel"
+                  >
+                    <X className="w-4 h-4 text-red-600" />
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 group">
+                  <h1 className="text-lg font-semibold text-gray-800">
+                    {currentWorkflowName}
+                  </h1>
+                  <button
+                    onClick={handleStartEditTitle}
+                    className="opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-100 rounded transition-all"
+                    title="Edit title"
+                    disabled={isExecuting || simulationStatus === 'running'}
+                  >
+                    <Edit2 className="w-4 h-4 text-gray-500" />
+                  </button>
+                </div>
+              )}
             </div>
+            
             <ModeSwitcher />
           </div>
 
-          {/* Right */}
+          {/* Right - Todos os botões anteriores permanecem iguais */}
           <div className="flex items-center gap-2">
-            {/* Save */}
             <Button
               size="sm"
               variant="outline"
@@ -164,7 +264,6 @@ export function Toolbar() {
               Save
             </Button>
 
-            {/* Load */}
             <Button
               size="sm"
               variant="outline"
@@ -178,7 +277,6 @@ export function Toolbar() {
 
             <div className="w-px h-6 bg-gray-200" />
 
-            {/* Export JSON */}
             <Button
               size="sm"
               variant="outline"
@@ -190,7 +288,6 @@ export function Toolbar() {
               Export JSON
             </Button>
 
-            {/* ⚠️ NOVO: Export Image */}
             <Button
               size="sm"
               variant="outline"
@@ -202,7 +299,6 @@ export function Toolbar() {
               Export Image
             </Button>
 
-            {/* Import */}
             <Button
               size="sm"
               variant="outline"
@@ -216,7 +312,6 @@ export function Toolbar() {
 
             <div className="w-px h-6 bg-gray-200" />
 
-            {/* Clear */}
             <Button
               size="sm"
               variant="outline"
@@ -230,56 +325,33 @@ export function Toolbar() {
 
             <div className="w-px h-6 bg-gray-200" />
 
-            {/* Run / Simulate */}
             {mode === AppMode.ARCHITECTURE ? (
               simulationStatus === 'running' ? (
-                <Button
-                  size="sm"
-                  className="gap-2 bg-amber-600 hover:bg-amber-700"
-                  disabled
-                >
+                <Button size="sm" className="gap-2 bg-amber-600 hover:bg-amber-700" disabled>
                   <Loader2 className="w-4 h-4 animate-spin" />
                   Simulating...
                 </Button>
               ) : simulationStatus === 'completed' ? (
-                <Button
-                  size="sm"
-                  className="gap-2 bg-gray-600 hover:bg-gray-700"
-                  onClick={resetSimulation}
-                >
+                <Button size="sm" className="gap-2 bg-gray-600 hover:bg-gray-700" onClick={resetSimulation}>
                   <Play className="w-4 h-4" />
                   Reset
                 </Button>
               ) : (
-                <Button
-                  size="sm"
-                  className="gap-2 bg-blue-600 hover:bg-blue-700"
-                  onClick={startSimulation}
-                >
+                <Button size="sm" className="gap-2 bg-blue-600 hover:bg-blue-700" onClick={startSimulation}>
                   <Play className="w-4 h-4" />
                   Simulate
                 </Button>
               )
+            ) : isExecuting ? (
+              <Button size="sm" className="gap-2 bg-red-600 hover:bg-red-700" disabled>
+                <Square className="w-4 h-4" />
+                Running...
+              </Button>
             ) : (
-              isExecuting ? (
-                <Button
-                  size="sm"
-                  className="gap-2 bg-red-600 hover:bg-red-700"
-                  disabled
-                >
-                  <Square className="w-4 h-4" />
-                  Running...
-                </Button>
-              ) : (
-                <Button
-                  size="sm"
-                  className="gap-2 bg-green-600 hover:bg-green-700"
-                  onClick={handleRun}
-                >
-                  <Play className="w-4 h-4" />
-                  Run
-                </Button>
-              )
+              <Button size="sm" className="gap-2 bg-green-600 hover:bg-green-700" onClick={handleRun}>
+                <Play className="w-4 h-4" />
+                Run
+              </Button>
             )}
           </div>
         </div>
@@ -311,14 +383,13 @@ export function Toolbar() {
         open={showClearConfirm}
         onOpenChange={setShowClearConfirm}
         title="Clear Canvas"
-        description="Are you sure you want to clear the canvas? This action cannot be undone."
-        confirmText="Clear Canvas"
+        description="Are you sure you want to clear the canvas? This will reset everything (nodes, edges, execution state)."
+        confirmText="Clear Everything"
         cancelText="Cancel"
         variant="destructive"
         onConfirm={handleClear}
       />
 
-      {/* ⚠️ NOVO: Export Image Dialog */}
       <ExportImageDialog
         open={showExportImageDialog}
         onOpenChange={setShowExportImageDialog}

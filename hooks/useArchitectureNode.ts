@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Node, useOnSelectionChange, useReactFlow } from 'reactflow';
 import { ArchitectureNodeData } from '@/lib/architecture/c4-types';
 
@@ -11,6 +11,7 @@ export function useArchitectureNode() {
   // Listen to selection changes
   useOnSelectionChange({
     onChange: ({ nodes }) => {
+      // ⚠️ IMPORTANTE: Só pegar nodes architecture
       if (nodes.length === 1 && nodes[0].type === 'architecture') {
         setSelectedNode(nodes[0] as Node<ArchitectureNodeData>);
       } else {
