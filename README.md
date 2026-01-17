@@ -41,7 +41,7 @@ FlowForge is a **modern, interactive C4 Model architecture diagramming tool** th
 | Component Type | Visual Style | Use Case |
 |---------------|--------------|----------|
 | **Person** | Green rounded box with 👤 icon | System users and actors |
-| **External System** | Red/orange box | Third-party services (AWS, SendGrid, etc) |
+| **External System** | Gray box | Third-party services (AWS, SendGrid, etc) |
 | **Container (Web)** | Blue box with browser bar (●●●) | Frontend applications |
 | **Container (Service)** | Blue box with terminal icon | Backend services, APIs |
 | **Database** | Blue cylinder | Data stores (PostgreSQL, DynamoDB, etc) |
@@ -99,7 +99,7 @@ FlowForge is a **modern, interactive C4 Model architecture diagramming tool** th
 ### Installation
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/flowforge.git
+git clone https://github.com/7Gabriel/FlowForge.git
 cd flowforge
 
 # Install dependencies
@@ -253,7 +253,7 @@ FlowForge strictly follows the [C4 Model](https://c4model.com/) notation created
 | C4 Level | Component | FlowForge Style |
 |----------|-----------|-----------------|
 | **Context** | Person | 🟢 Green rounded box with user icon |
-| **Context** | External System | 🔴 Red/orange rectangular box |
+| **Context** | External System | gray rectangular box |
 | **Container** | Web Application | 🔵 Blue box with browser bar (●●●) |
 | **Container** | Backend Service | 🔵 Blue box with terminal icon |
 | **Container** | Database | 🔵 Blue cylinder shape |
@@ -400,11 +400,11 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ## 👨‍💻 Author
 
-**Gabriel** - *Software Architect with 15 years of IT experience*
+**João Gabriel** - *Software Architect with 15 years of IT experience*
 
-- 💼 LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourprofile)
-- 🐙 GitHub: [@yourusername](https://github.com/yourusername)
-- 🌐 Portfolio: [your-portfolio.com](https://your-portfolio.com)
+- 💼 LinkedIn: [Your LinkedIn](https://linkedin.com/in/joao-gabriel-matuto)
+- 🐙 GitHub: [@yourusername](https://github.com/7Gabriel)
+
 
 ---
 
@@ -433,7 +433,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 If you find **FlowForge** useful, please give it a ⭐ on GitHub!
 
-[![Star History Chart](https://api.star-history.com/svg?repos=yourusername/flowforge&type=Date)](https://star-history.com/#yourusername/flowforge&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=7Gabriel/flowforge&type=Date)](https://star-history.com/#7Gabriel/flowforge&Date)
 
 ---
 

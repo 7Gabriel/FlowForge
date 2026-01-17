@@ -18,7 +18,9 @@ import {
   Play
 } from 'lucide-react';
 import { useWorkflowExecution } from '@/contexts/WorkflowExecutionContext';
-import { toPng, toSvg } from 'html-to-image';
+import { ConfirmModal } from '@/components/ui/confirm-modal';
+import { AlertModal } from '@/components/ui/alert-modal';
+import { toPng } from 'html-to-image';
 
 export function Toolbar() {
   const { getNodes, getEdges, setNodes, setEdges } = useReactFlow();
@@ -29,24 +31,57 @@ export function Toolbar() {
   const titleInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Modal states
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    onConfirm: () => {},
+  });
+
+  const [alertModal, setAlertModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    type: 'success' | 'error' | 'info';
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    type: 'info',
+  });
+
+  const showAlert = (title: string, message: string, type: 'success' | 'error' | 'info' = 'info') => {
+    setAlertModal({ isOpen: true, title, message, type });
+  };
+
+  const showConfirm = (title: string, message: string, onConfirm: () => void) => {
+    setConfirmModal({ isOpen: true, title, message, onConfirm });
+  };
+
   const handleSave = () => {
     const nodes = getNodes();
     const edges = getEdges();
     const data = { nodes, edges, title: workflowTitle };
-    localStorage.setItem('architecture-live', JSON.stringify(data));
-    alert('Saved to browser storage!');
+    localStorage.setItem('flowforge-diagram', JSON.stringify(data));
+    showAlert('Saved Successfully', 'Your diagram has been saved to browser storage.', 'success');
   };
 
   const handleLoad = () => {
-    const saved = localStorage.getItem('architecture-live');
+    const saved = localStorage.getItem('flowforge-diagram');
     if (saved) {
       const data = JSON.parse(saved);
       setNodes(data.nodes || []);
       setEdges(data.edges || []);
       if (data.title) setWorkflowTitle(data.title);
-      alert('Loaded from browser storage!');
+      showAlert('Loaded Successfully', 'Your diagram has been loaded from browser storage.', 'success');
     } else {
-      alert('No saved data found!');
+      showAlert('No Saved Data', 'No saved diagram found in browser storage.', 'info');
     }
   };
 
@@ -68,7 +103,7 @@ export function Toolbar() {
   const handleExportImage = async () => {
     const element = document.querySelector('.react-flow') as HTMLElement;
     if (!element) {
-      alert('Canvas not found!');
+      showAlert('Export Failed', 'Canvas not found!', 'error');
       return;
     }
 
@@ -87,7 +122,7 @@ export function Toolbar() {
       document.body.removeChild(a);
     } catch (error) {
       console.error('Error exporting image:', error);
-      alert('Failed to export image!');
+      showAlert('Export Failed', 'Failed to export image. Please try again.', 'error');
     }
   };
 
@@ -106,10 +141,10 @@ export function Toolbar() {
         setNodes(data.nodes || []);
         setEdges(data.edges || []);
         if (data.title) setWorkflowTitle(data.title);
-        alert('Imported successfully!');
+        showAlert('Imported Successfully', 'Your diagram has been imported.', 'success');
       } catch (error) {
         console.error('Error importing file:', error);
-        alert('Failed to import file!');
+        showAlert('Import Failed', 'Failed to import file. Please check the file format.', 'error');
       }
     };
     reader.readAsText(file);
@@ -117,16 +152,21 @@ export function Toolbar() {
   };
 
   const handleClear = () => {
-    if (confirm('Clear all nodes and edges?')) {
-      setNodes([]);
-      setEdges([]);
-      clearResults();
-      setWorkflowTitle('Architecture Live');
-      setTimeout(() => {
+    showConfirm(
+      'Clear Diagram',
+      'Are you sure you want to clear all nodes and edges? This action cannot be undone.',
+      () => {
         setNodes([]);
         setEdges([]);
-      }, 0);
-    }
+        clearResults();
+        setWorkflowTitle('FlowForge');
+        setTimeout(() => {
+          setNodes([]);
+          setEdges([]);
+        }, 0);
+        setConfirmModal({ ...confirmModal, isOpen: false });
+      }
+    );
   };
 
   const handleBringToFront = () => {
@@ -134,7 +174,7 @@ export function Toolbar() {
     const selectedNodes = nodes.filter(n => n.selected);
     
     if (selectedNodes.length === 0) {
-      alert('Select a node first');
+      showAlert('No Selection', 'Please select a node first.', 'info');
       return;
     }
 
@@ -154,8 +194,6 @@ export function Toolbar() {
         return node;
       })
     );
-
-    console.log('✅ Brought to front:', selectedNodes.length, 'nodes');
   };
 
   const handleSendToBack = () => {
@@ -163,7 +201,7 @@ export function Toolbar() {
     const selectedNodes = nodes.filter(n => n.selected);
     
     if (selectedNodes.length === 0) {
-      alert('Select a node first');
+      showAlert('No Selection', 'Please select a node first.', 'info');
       return;
     }
 
@@ -183,175 +221,192 @@ export function Toolbar() {
         return node;
       })
     );
-
-    console.log('✅ Sent to back:', selectedNodes.length, 'nodes');
   };
 
-  // ⚠️ NOVO: Simulate Architecture Flow
   const handleSimulate = () => {
     const nodes = getNodes();
     const edges = getEdges();
     
     if (nodes.length === 0) {
-      alert('Add nodes to simulate!');
+      showAlert('No Nodes', 'Please add nodes to your diagram before simulating.', 'info');
       return;
     }
 
-    console.log('🎬 Starting architecture simulation...');
+    console.log('🎬 Starting simulation...');
     executeWorkflow(nodes, edges);
   };
 
   return (
-    <div className="absolute top-0 left-0 right-0 h-14 bg-white border-b border-gray-200 flex items-center justify-between px-4 z-50 shadow-sm">
-      {/* Left Section - Title */}
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2">
-          <FileJson className="w-5 h-5 text-gray-600" />
-          {isEditingTitle ? (
-            <div className="flex items-center gap-2">
-              <input
-                ref={titleInputRef}
-                type="text"
-                value={editedTitle}
-                onChange={(e) => setEditedTitle(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
+    <>
+      <div className="absolute top-0 left-0 right-0 h-14 bg-white border-b border-gray-200 flex items-center justify-between px-4 z-50 shadow-sm">
+        {/* Left Section - Title */}
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <FileJson className="w-5 h-5 text-gray-600" />
+            {isEditingTitle ? (
+              <div className="flex items-center gap-2">
+                <input
+                  ref={titleInputRef}
+                  type="text"
+                  value={editedTitle}
+                  onChange={(e) => setEditedTitle(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      setWorkflowTitle(editedTitle);
+                      setIsEditingTitle(false);
+                    } else if (e.key === 'Escape') {
+                      setEditedTitle(workflowTitle);
+                      setIsEditingTitle(false);
+                    }
+                  }}
+                  className="px-2 py-1 border border-blue-500 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  style={{ width: `${Math.max(editedTitle.length * 8 + 20, 150)}px` }}
+                  autoFocus
+                />
+                <button
+                  onClick={() => {
                     setWorkflowTitle(editedTitle);
                     setIsEditingTitle(false);
-                  } else if (e.key === 'Escape') {
+                  }}
+                  className="p-1 text-green-600 hover:bg-green-50 rounded"
+                  title="Save"
+                >
+                  <Check className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => {
                     setEditedTitle(workflowTitle);
                     setIsEditingTitle(false);
-                  }
-                }}
-                className="px-2 py-1 border border-blue-500 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                style={{ width: `${Math.max(editedTitle.length * 8 + 20, 150)}px` }}
-                autoFocus
-              />
-              <button
-                onClick={() => {
-                  setWorkflowTitle(editedTitle);
-                  setIsEditingTitle(false);
-                }}
-                className="p-1 text-green-600 hover:bg-green-50 rounded"
-                title="Save"
-              >
-                <Check className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => {
-                  setEditedTitle(workflowTitle);
-                  setIsEditingTitle(false);
-                }}
-                className="p-1 text-red-600 hover:bg-red-50 rounded"
-                title="Cancel"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-          ) : (
-            <div className="flex items-center gap-2 group">
-              <h1 className="text-xl font-semibold text-gray-800">{workflowTitle}</h1>
-              <button
-                onClick={() => {
-                  setEditedTitle(workflowTitle);
-                  setIsEditingTitle(true);
-                }}
-                className="opacity-0 group-hover:opacity-100 p-1 text-gray-600 hover:bg-gray-100 rounded transition-opacity"
-                title="Edit title"
-              >
-                <Edit2 className="w-4 h-4" />
-              </button>
-            </div>
-          )}
+                  }}
+                  className="p-1 text-red-600 hover:bg-red-50 rounded"
+                  title="Cancel"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 group">
+                <h1 className="text-xl font-semibold text-gray-800">{workflowTitle}</h1>
+                <button
+                  onClick={() => {
+                    setEditedTitle(workflowTitle);
+                    setIsEditingTitle(true);
+                  }}
+                  className="opacity-0 group-hover:opacity-100 p-1 text-gray-600 hover:bg-gray-100 rounded transition-opacity"
+                  title="Edit title"
+                >
+                  <Edit2 className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+          </div>
         </div>
+
+        {/* Right Section - Actions */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleBringToFront}
+            className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+            title="Bring to Front"
+          >
+            <ArrowUp className="w-4 h-4" />
+            Front
+          </button>
+          <button
+            onClick={handleSendToBack}
+            className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+            title="Send to Back"
+          >
+            <ArrowDown className="w-4 h-4" />
+            Back
+          </button>
+          <div className="w-px h-6 bg-gray-300" />
+
+          <button
+            onClick={handleSave}
+            className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <Save className="w-4 h-4" />
+            Save
+          </button>
+
+          <button
+            onClick={handleLoad}
+            className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <FolderOpen className="w-4 h-4" />
+            Load
+          </button>
+
+          <button
+            onClick={handleExportJSON}
+            className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <Download className="w-4 h-4" />
+            Export JSON
+          </button>
+
+          <button
+            onClick={handleExportImage}
+            className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <ImageIcon className="w-4 h-4" />
+            Export Image
+          </button>
+
+          <button
+            onClick={handleImport}
+            className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <Upload className="w-4 h-4" />
+            Import
+          </button>
+
+          <button
+            onClick={handleClear}
+            className="flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+          >
+            <Trash2 className="w-4 h-4" />
+            Clear
+          </button>
+
+          <button
+            onClick={handleSimulate}
+            className="flex items-center gap-2 px-4 py-2 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors font-medium"
+          >
+            <Play className="w-4 h-4" />
+            Simulate
+          </button>
+        </div>
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".json"
+          onChange={handleFileSelect}
+          className="hidden"
+        />
       </div>
 
-      {/* Right Section - Actions */}
-      <div className="flex items-center gap-2">
-        {/* Z-Index Controls */}
-        <button
-          onClick={handleBringToFront}
-          className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-          title="Bring to Front"
-        >
-          <ArrowUp className="w-4 h-4" />
-          Front
-        </button>
-        <button
-          onClick={handleSendToBack}
-          className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-          title="Send to Back"
-        >
-          <ArrowDown className="w-4 h-4" />
-          Back
-        </button>
-        <div className="w-px h-6 bg-gray-300" />
-
-        <button
-          onClick={handleSave}
-          className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-        >
-          <Save className="w-4 h-4" />
-          Save
-        </button>
-
-        <button
-          onClick={handleLoad}
-          className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-        >
-          <FolderOpen className="w-4 h-4" />
-          Load
-        </button>
-
-        <button
-          onClick={handleExportJSON}
-          className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-        >
-          <Download className="w-4 h-4" />
-          Export JSON
-        </button>
-
-        <button
-          onClick={handleExportImage}
-          className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-        >
-          <ImageIcon className="w-4 h-4" />
-          Export Image
-        </button>
-
-        <button
-          onClick={handleImport}
-          className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-        >
-          <Upload className="w-4 h-4" />
-          Import
-        </button>
-
-        <button
-          onClick={handleClear}
-          className="flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-        >
-          <Trash2 className="w-4 h-4" />
-          Clear
-        </button>
-
-        {/* ⚠️ NOVO: Simulate Button */}
-        <button
-          onClick={handleSimulate}
-          className="flex items-center gap-2 px-4 py-2 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors font-medium"
-        >
-          <Play className="w-4 h-4" />
-          Simulate
-        </button>
-      </div>
-
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept=".json"
-        onChange={handleFileSelect}
-        className="hidden"
+      {/* Modals */}
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        onConfirm={confirmModal.onConfirm}
+        onCancel={() => setConfirmModal({ ...confirmModal, isOpen: false })}
+        confirmText="Clear"
+        cancelText="Cancel"
+        type="danger"
       />
-    </div>
+
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        title={alertModal.title}
+        message={alertModal.message}
+        type={alertModal.type}
+        onClose={() => setAlertModal({ ...alertModal, isOpen: false })}
+      />
+    </>
   );
 }
