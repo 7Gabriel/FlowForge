@@ -1,89 +1,87 @@
 'use client';
 
-import React from 'react';
-import { useArchitectureNode } from '@/hooks/useArchitectureNode';
+import React, { useState, useEffect } from 'react';
 import { useReactFlow } from 'reactflow';
-import { ArchitectureNodeEditor } from './ArchitectureNodeEditor';
+import { ArchitecturePropertiesEditor } from './ArchitecturePropertiesEditor';
 import { GroupPropertiesEditor } from './GroupPropertiesEditor';
+import { Settings } from 'lucide-react';
 
 export function ArchitecturePropertiesPanel() {
-  const { selectedNode, updateNodeData } = useArchitectureNode();
-  const { getNode } = useReactFlow();
+  const reactFlow = useReactFlow();
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const [, forceUpdate] = useState(0);
 
-  // ⚠️ PROTEÇÃO: Verificar se node existe
-  if (!selectedNode) {
-    return (
-      <div className="w-96 h-screen bg-white border-l border-gray-200 flex items-center justify-center">
-        <div className="text-center text-gray-400">
-          <div className="text-sm">Select a component to edit properties</div>
-        </div>
-      </div>
-    );
-  }
+  // Polling para detectar mudanças de seleção
+  useEffect(() => {
+    const checkSelection = () => {
+      try {
+        const nodes = reactFlow.getNodes();
+        const selected = nodes.find((node) => node.selected);
+        
+        if (selected?.id !== selectedNodeId) {
+          console.log('🔄 Selection changed:', selected?.id);
+          setSelectedNodeId(selected?.id || null);
+        }
+      } catch (error) {
+        console.error('Error checking selection:', error);
+      }
+    };
 
-  // ⚠️ PROTEÇÃO: Pegar node do React Flow
-  const selectedReactFlowNode = getNode(selectedNode.id);
+    // Check imediatamente
+    checkSelection();
+
+    // Check a cada 100ms
+    const interval = setInterval(checkSelection, 100);
+
+    return () => clearInterval(interval);
+  }, [reactFlow, selectedNodeId]);
+
+  // Pegar o node selecionado
+  let selectedNode = null;
+  let allNodes = [];
   
-  if (!selectedReactFlowNode) {
-    return (
-      <div className="w-96 h-screen bg-white border-l border-gray-200 flex items-center justify-center">
-        <div className="text-center text-gray-400">
-          <div className="text-sm">Node not found</div>
-        </div>
-      </div>
-    );
+  try {
+    allNodes = reactFlow.getNodes();
+    selectedNode = allNodes.find((node) => node.id === selectedNodeId);
+  } catch (error) {
+    console.error('Error getting nodes:', error);
   }
 
-  const isGroupNode = selectedReactFlowNode.type === 'group';
-
-  // ⚠️ LOG para debug
-  console.log('🔍 Selected Node:', {
-    id: selectedReactFlowNode.id,
-    type: selectedReactFlowNode.type,
-    isGroup: isGroupNode,
-    data: selectedReactFlowNode.data,
-  });
+  const isGroup = selectedNode?.type === 'group';
 
   return (
-    <div className="w-96 h-screen bg-white border-l border-gray-200 flex flex-col">
+    <div className="w-80 h-screen bg-white border-l border-gray-200 flex flex-col">
       {/* Header */}
-      <div className="p-4 border-b border-gray-200 flex items-center justify-between">
-        <div>
-          <h2 className="text-lg font-semibold text-gray-800">Properties</h2>
-          <p className="text-xs text-gray-500">
-            {isGroupNode ? 'Group Container' : ((selectedNode.data as any)?.category || 'Component')}
-          </p>
+      <div className="p-4 border-b border-gray-200">
+        <div className="flex items-center gap-2 text-gray-800">
+          <Settings className="w-5 h-5" />
+          <h2 className="text-lg font-semibold">
+            {isGroup ? 'Group Properties' : 'Properties'}
+          </h2>
         </div>
+        <p className="text-xs text-gray-500 mt-1">
+          {selectedNode
+            ? isGroup
+              ? 'Edit group container'
+              : 'Edit component properties'
+            : 'Select a component to edit'}
+        </p>
       </div>
 
-      {/* Editor */}
+      {/* Content */}
       <div className="flex-1 overflow-y-auto">
-        {isGroupNode ? (
-          <GroupPropertiesEditor
-            node={selectedReactFlowNode}
-            onUpdate={updateNodeData}
-          />
+        {selectedNode ? (
+          isGroup ? (
+            <GroupPropertiesEditor nodeId={selectedNode.id} />
+          ) : (
+            <ArchitecturePropertiesEditor nodeId={selectedNode.id} />
+          )
         ) : (
-          <ArchitectureNodeEditor
-            node={selectedNode}
-            onUpdate={updateNodeData}
-          />
+          <div className="flex flex-col items-center justify-center h-full text-gray-400 p-8 text-center">
+            <Settings className="w-12 h-12 mb-3 opacity-50" />
+            <p className="text-sm">Select a component to view and edit its properties</p>
+          </div>
         )}
-      </div>
-
-      {/* Footer */}
-      <div className="p-4 border-t border-gray-200 bg-gray-50">
-        <div className="text-xs text-gray-500">
-          <div className="font-semibold mb-1">Node ID:</div>
-          <div className="font-mono bg-white px-2 py-1 rounded border border-gray-200 truncate">
-            {selectedNode.id}
-          </div>
-          {/* ⚠️ DEBUG INFO */}
-          <div className="font-semibold mb-1 mt-2">Node Type:</div>
-          <div className="font-mono bg-white px-2 py-1 rounded border border-gray-200 truncate">
-            {selectedReactFlowNode.type}
-          </div>
-        </div>
       </div>
     </div>
   );

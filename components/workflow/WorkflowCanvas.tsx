@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useRef, DragEvent, useState } from 'react';
+import { useCallback, useRef, DragEvent, useState, KeyboardEvent } from 'react';
 import ReactFlow, {
   Background,
   Controls,
@@ -15,7 +15,7 @@ import ReactFlow, {
   NodeTypes,
   EdgeTypes,
   ReactFlowInstance,
-  MarkerType, // ⚠️ Novo
+  MarkerType,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 
@@ -26,36 +26,51 @@ import { ConditionNode } from './nodes/ConditionNode';
 import { OutputNode } from './nodes/OutputNode';
 import { C4Node } from '@/components/architecture/nodes/C4Node';
 import { GroupNode } from '@/components/architecture/nodes/GroupNode';
+import { PersonNode } from '@/components/architecture/nodes/PersonNode';
+import { ExternalSystemNode } from '@/components/architecture/nodes/ExternalSystemNode';
+import { ContainerWebNode } from '@/components/architecture/nodes/ContainerWebNode';
+import { ContainerServiceNode } from '@/components/architecture/nodes/ContainerServiceNode';
+import { DatabaseNode } from '@/components/architecture/nodes/DatabaseNode';
+import { ComponentNode } from '@/components/architecture/nodes/ComponentNode';
 import { AnimatedEdge } from '@/components/architecture/edges/AnimatedEdge';
+import { EditableEdge } from '@/components/architecture/edges/EditableEdge';
 import { NodeType } from '@/lib/workflow/types';
 import { getNodeTemplate } from '@/lib/workflow/node-templates';
 import { getC4Template } from '@/lib/architecture/c4-templates';
 import { getGroupTemplate } from '@/lib/architecture/group-templates';
-import { C4NodeCategory, GroupStyle } from '@/lib/architecture/c4-types';
+import { C4NodeCategory, GroupStyle, C4VisualStyle } from '@/lib/architecture/c4-types';
 import { useAppMode } from '@/contexts/AppModeContext';
 import { AppMode } from '@/lib/types';
-import { EditableEdge } from '@/components/architecture/edges/EditableEdge'; // ⚠️ Novo
-
 
 const nodeTypes: NodeTypes = {
+  // Workflow nodes
   [NodeType.TRIGGER]: TriggerNode,
   [NodeType.LLM]: LLMNode,
   [NodeType.HTTP]: HTTPNode,
   [NodeType.CONDITION]: ConditionNode,
   [NodeType.OUTPUT]: OutputNode,
+  
+  // Architecture nodes (antigo - manter por compatibilidade)
   'architecture': C4Node,
   'group': GroupNode,
+  
+  // C4 Visual Styles
+  'person': PersonNode,
+  'external-system': ExternalSystemNode,
+  'container-web': ContainerWebNode,
+  'container-service': ContainerServiceNode,
+  'database': DatabaseNode,
+  'component': ComponentNode,
 };
 
 const edgeTypes: EdgeTypes = {
   'animated': AnimatedEdge,
-  'editable': EditableEdge, // ⚠️ Novo
+  'editable': EditableEdge,
 };
 
 const initialNodes: Node[] = [];
 const initialEdges: Edge[] = [];
 
-// ⚠️ NOVO: Default edge options com setas
 const defaultEdgeOptions = {
   type: 'smoothstep',
   markerEnd: {
@@ -77,27 +92,42 @@ export function WorkflowCanvas() {
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
   const { mode } = useAppMode();
 
+  const defaultEdgeOptions = {
+    type: 'smoothstep',
+    markerEnd: {
+      type: MarkerType.ArrowClosed,
+      width: 20,
+      height: 20,
+      color: '#94A3B8',
+    },
+    style: {
+      strokeWidth: 3, // ⚠️ Aumentado de 2 para 3
+      stroke: '#94A3B8',
+    },
+  };
+
   const onConnect: OnConnect = useCallback(
     (connection: Connection) => {
       console.log('✅ Connection created');
       
       const newEdge = {
         ...connection,
-        type: mode === AppMode.ARCHITECTURE ? 'editable' : 'smoothstep',
-        animated: false, // Animação controlada pelo edgeStyle
+        type: 'editable',
+        animated: false,
         markerEnd: {
           type: MarkerType.ArrowClosed,
           width: 20,
           height: 20,
-          color: mode === AppMode.ARCHITECTURE ? '#3B82F6' : '#94A3B8',
+          color: '#3B82F6',
         },
         style: {
-          strokeWidth: 2,
-          stroke: mode === AppMode.ARCHITECTURE ? '#3B82F6' : '#94A3B8',
+          strokeWidth: 3, // ⚠️ Aumentado
+          stroke: '#3B82F3',
+          cursor: 'pointer', // ⚠️ Cursor pointer
         },
         data: {
           label: '',
-          edgeStyle: 'dashed' as const, // ⚠️ Estilo padrão
+          edgeStyle: 'dashed' as const,
           onLabelChange: (edgeId: string, newLabel: string) => {
             setEdges((eds) =>
               eds.map((edge) =>
@@ -107,7 +137,6 @@ export function WorkflowCanvas() {
               )
             );
           },
-          // ⚠️ NOVO: Handler para mudar estilo
           onStyleChange: (edgeId: string, newStyle: string) => {
             setEdges((eds) =>
               eds.map((edge) =>
@@ -122,7 +151,7 @@ export function WorkflowCanvas() {
       
       setEdges((eds) => addEdge(newEdge, eds));
     },
-    [mode, setEdges]
+    [setEdges]
   );
 
   const onDragOver = useCallback((event: DragEvent) => {
@@ -133,32 +162,40 @@ export function WorkflowCanvas() {
   const onDrop = useCallback(
     (event: DragEvent) => {
       event.preventDefault();
-
+  
       if (!reactFlowInstance) {
+        console.error('❌ ReactFlow instance not ready');
         return;
       }
-
+  
       const nodeType = event.dataTransfer.getData('application/reactflow');
       const dragType = event.dataTransfer.getData('nodeType');
-
+  
+      console.log('📦 Drop event:', { nodeType, dragType }); // ⚠️ DEBUG
+  
       if (!nodeType) {
+        console.error('❌ No nodeType found');
         return;
       }
-
+  
       const position = reactFlowInstance.screenToFlowPosition({
         x: event.clientX,
         y: event.clientY,
       });
-
+  
+      console.log('📍 Drop position:', position); // ⚠️ DEBUG
+  
       let newNode: Node;
-
+  
       if (dragType === 'group') {
         const template = getGroupTemplate(nodeType as GroupStyle);
         if (!template) {
-          console.error('Group template not found:', nodeType);
+          console.error('❌ Group template not found:', nodeType);
           return;
         }
-
+  
+        console.log('✅ Creating group node:', template.label); // ⚠️ DEBUG
+  
         newNode = {
           id: `group-${Date.now()}`,
           type: 'group',
@@ -173,21 +210,67 @@ export function WorkflowCanvas() {
             category: 'group',
           },
           style: {
-            width: 400,
-            height: 300,
+            width: 500,
+            height: 350,
             zIndex: -1,
           },
         };
       } else if (dragType === 'architecture') {
         const template = getC4Template(nodeType as C4NodeCategory);
         if (!template) {
-          console.error('Architecture template not found:', nodeType);
+          console.error('❌ Architecture template not found:', nodeType);
           return;
         }
-
+  
+        console.log('✅ Creating architecture node:', template.label); // ⚠️ DEBUG
+  
+        const visualStyle = template.defaultData.visualStyle;
+        let nodeTypeStr = 'architecture';
+        let nodeWidth = 180;
+        let nodeHeight = 140;
+  
+        switch (visualStyle) {
+          case C4VisualStyle.PERSON:
+            nodeTypeStr = 'person';
+            nodeWidth = 180;
+            nodeHeight = 160;
+            break;
+          case C4VisualStyle.EXTERNAL_SYSTEM:
+            nodeTypeStr = 'external-system';
+            nodeWidth = 180;
+            nodeHeight = 140;
+            break;
+          case C4VisualStyle.CONTAINER_WEB:
+            nodeTypeStr = 'container-web';
+            nodeWidth = 200;
+            nodeHeight = 160;
+            break;
+          case C4VisualStyle.CONTAINER_SERVICE:
+            nodeTypeStr = 'container-service';
+            nodeWidth = 200;
+            nodeHeight = 160;
+            break;
+          case C4VisualStyle.DATABASE:
+            nodeTypeStr = 'database';
+            nodeWidth = 180;
+            nodeHeight = 200;
+            break;
+          case C4VisualStyle.COMPONENT:
+            nodeTypeStr = 'component';
+            nodeWidth = 160;
+            nodeHeight = 120;
+            break;
+          default:
+            nodeTypeStr = 'architecture';
+            nodeWidth = 180;
+            nodeHeight = 140;
+        }
+  
+        console.log('✅ Node type determined:', nodeTypeStr); // ⚠️ DEBUG
+  
         newNode = {
           id: `arch-${Date.now()}`,
-          type: 'architecture',
+          type: nodeTypeStr,
           position,
           data: {
             ...template.defaultData,
@@ -195,19 +278,20 @@ export function WorkflowCanvas() {
             level: template.level,
             color: template.color,
             icon: template.iconName,
+            visualStyle: visualStyle,
           },
           style: {
-            width: 180,
-            height: 140,
+            width: nodeWidth,
+            height: nodeHeight,
           },
         };
       } else {
         const template = getNodeTemplate(nodeType as NodeType);
         if (!template) {
-          console.error('Workflow template not found:', nodeType);
+          console.error('❌ Workflow template not found:', nodeType);
           return;
         }
-
+  
         newNode = {
           id: `${nodeType}-${Date.now()}`,
           type: nodeType,
@@ -215,11 +299,45 @@ export function WorkflowCanvas() {
           data: { ...template.defaultData },
         };
       }
-
-      setNodes((nds) => nds.concat(newNode));
-      console.log('✅ Node created:', newNode);
+  
+      console.log('✅ Adding node to canvas:', newNode); // ⚠️ DEBUG
+      setNodes((nds) => {
+        const updated = nds.concat(newNode);
+        console.log('✅ Total nodes after add:', updated.length); // ⚠️ DEBUG
+        return updated;
+      });
     },
     [reactFlowInstance, setNodes]
+  );
+
+  const onNodesDelete = useCallback((deleted: Node[]) => {
+    console.log('🗑️ Nodes deleted:', deleted);
+  }, []);
+
+  const onEdgesDelete = useCallback((deleted: Edge[]) => {
+    console.log('🗑️ Edges deleted:', deleted);
+  }, []);
+
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      if (event.key === 'Delete' || event.key === 'Backspace') {
+        const selectedNodes = nodes.filter((node) => node.selected);
+        const selectedEdges = edges.filter((edge) => edge.selected);
+
+        if (selectedNodes.length > 0 || selectedEdges.length > 0) {
+          if (selectedNodes.length > 0) {
+            setNodes((nds) => nds.filter((node) => !node.selected));
+            console.log('🗑️ Deleted nodes:', selectedNodes.length);
+          }
+          
+          if (selectedEdges.length > 0) {
+            setEdges((eds) => eds.filter((edge) => !edge.selected));
+            console.log('🗑️ Deleted edges:', selectedEdges.length);
+          }
+        }
+      }
+    },
+    [nodes, edges, setNodes, setEdges]
   );
 
   return (
@@ -228,6 +346,8 @@ export function WorkflowCanvas() {
       className="w-full h-full bg-gray-50"
       onDrop={onDrop}
       onDragOver={onDragOver}
+      tabIndex={0}
+      onKeyDown={handleKeyDown as any}
     >
       <ReactFlow
         nodes={nodes}
@@ -235,14 +355,17 @@ export function WorkflowCanvas() {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        onNodesDelete={onNodesDelete}
+        onEdgesDelete={onEdgesDelete}
         onInit={setReactFlowInstance}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
-        defaultEdgeOptions={defaultEdgeOptions} // ⚠️ Novo
+        defaultEdgeOptions={defaultEdgeOptions}
         fitView
         selectNodesOnDrag={false}
         panOnDrag={[1, 2]}
         selectionOnDrag={false}
+        deleteKeyCode="Delete"
         className="bg-gray-50"
       >
         <Background color="#e5e7eb" gap={16} />
@@ -252,6 +375,13 @@ export function WorkflowCanvas() {
             if (node.type === 'group') {
               return (node.data as any).color || '#607D8B';
             }
+            
+            if (node.type === 'person') return '#4CAF50';
+            if (node.type === 'external-system') return '#FF5722';
+            if (node.type === 'container-web') return '#2196F3';
+            if (node.type === 'container-service') return '#2196F3';
+            if (node.type === 'database') return '#2196F3';
+            if (node.type === 'component') return '#2196F3';
             
             if (node.type === 'architecture') {
               return (node.data as any).color || '#438DD5';

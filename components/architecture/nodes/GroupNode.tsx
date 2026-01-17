@@ -17,36 +17,40 @@ export const GroupNode = memo(({ data, selected }: NodeProps<GroupNodeData>) => 
 
       {/* Container */}
       <div
-        className="w-full h-full rounded-lg relative"
+        className="w-full h-full rounded-lg relative overflow-visible"
         style={{
           border: `${data.borderWidth}px ${data.borderStyle} ${data.color}`,
           backgroundColor: data.backgroundColor || 'transparent',
         }}
       >
-        {/* Header/Title */}
+        {/* Header/Badge no topo esquerdo FORA da borda */}
         <div
-          className="absolute top-2 left-2 px-3 py-1 rounded font-semibold text-sm shadow-sm"
+          className="absolute px-3 py-1 rounded font-semibold text-xs shadow-md"
           style={{
             backgroundColor: data.color,
             color: '#FFFFFF',
+            top: '-12px',
+            left: '8px',
+            zIndex: 10,
           }}
         >
           {data.label}
         </div>
 
-        {/* Description (optional) */}
+        {/* Description (opcional) - dentro do container */}
         {data.description && (
           <div
-            className="absolute top-10 left-2 px-2 py-0.5 text-xs italic opacity-75"
+            className="absolute top-3 left-3 text-xs italic opacity-60"
             style={{
               color: data.color,
+              maxWidth: 'calc(100% - 24px)',
             }}
           >
             {data.description}
           </div>
         )}
 
-        {/* Content Area */}
+        {/* Content Area - nodes filhos renderizam aqui */}
         <div className="w-full h-full" />
       </div>
     </>

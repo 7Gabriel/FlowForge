@@ -4,9 +4,9 @@ import React, { useState } from 'react';
 import { Search, ChevronDown, ChevronRight, Box } from 'lucide-react';
 import { C4Level } from '@/lib/architecture/c4-types';
 import { c4Templates, getTemplatesByLevel } from '@/lib/architecture/c4-templates';
-import { groupTemplates, GroupTemplate } from '@/lib/architecture/group-templates'; // ⚠️ Novo
+import { groupTemplates } from '@/lib/architecture/group-templates';
 import { ArchitectureNodeItem } from './ArchitectureNodeItem';
-import { GroupNodeItem } from './GroupNodeItem'; // ⚠️ Vamos criar
+import { GroupNodeItem } from './GroupNodeItem';
 
 const levelLabels: Record<C4Level, string> = {
   [C4Level.CONTEXT]: 'Context',
@@ -27,7 +27,7 @@ export function ArchitectureNodePalette() {
   const [expandedLevels, setExpandedLevels] = useState<Set<C4Level>>(
     new Set([C4Level.CONTEXT, C4Level.CONTAINER])
   );
-  const [expandedGroups, setExpandedGroups] = useState(true); // ⚠️ Novo
+  const [expandedGroups, setExpandedGroups] = useState(true);
 
   const toggleLevel = (level: C4Level) => {
     setExpandedLevels((prev) => {
@@ -48,7 +48,7 @@ export function ArchitectureNodePalette() {
     template.defaultData.technology?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // ⚠️ Novo: Filtrar groups
+  // Filtrar groups
   const filteredGroups = groupTemplates.filter((template) =>
     template.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
     template.description.toLowerCase().includes(searchTerm.toLowerCase())
@@ -89,7 +89,7 @@ export function ArchitectureNodePalette() {
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
-        {/* ⚠️ NOVO: Groups Section */}
+        {/* Groups Section */}
         {filteredGroups.length > 0 && (
           <div>
             <button
@@ -127,7 +127,7 @@ export function ArchitectureNodePalette() {
           </div>
         )}
 
-        {/* C4 Levels (código anterior permanece igual) */}
+        {/* C4 Levels */}
         {Object.values(C4Level).map((level) => {
           const templates = groupedByLevel[level] || [];
           const isExpanded = expandedLevels.has(level);

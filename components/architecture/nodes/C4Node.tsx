@@ -58,65 +58,17 @@ export const C4Node = memo(({ data, selected }: NodeProps<ArchitectureNodeData>)
             HANDLES BIDIRECIONAIS (8 handles total)
             ======================================== */}
 
-        {/* TOP - Input + Output */}
-        <Handle
-          type="target"
-          position={Position.Top}
-          id="top-target"
-          className="w-3 h-3 !bg-gray-400 border-2 border-white hover:!bg-blue-500 transition-colors"
-        />
-        <Handle
-          type="source"
-          position={Position.Top}
-          id="top-source"
-          className="w-3 h-3 !bg-gray-400 border-2 border-white hover:!bg-blue-500 transition-colors"
-          style={{ top: 0 }}
-        />
-
-        {/* RIGHT - Input + Output */}
-        <Handle
-          type="target"
-          position={Position.Right}
-          id="right-target"
-          className="w-3 h-3 !bg-gray-400 border-2 border-white hover:!bg-blue-500 transition-colors"
-        />
-        <Handle
-          type="source"
-          position={Position.Right}
-          id="right-source"
-          className="w-3 h-3 !bg-gray-400 border-2 border-white hover:!bg-blue-500 transition-colors"
-          style={{ right: 0 }}
-        />
-
-        {/* BOTTOM - Input + Output */}
-        <Handle
-          type="target"
-          position={Position.Bottom}
-          id="bottom-target"
-          className="w-3 h-3 !bg-gray-400 border-2 border-white hover:!bg-blue-500 transition-colors"
-        />
-        <Handle
-          type="source"
-          position={Position.Bottom}
-          id="bottom-source"
-          className="w-3 h-3 !bg-gray-400 border-2 border-white hover:!bg-blue-500 transition-colors"
-          style={{ bottom: 0 }}
-        />
-
-        {/* LEFT - Input + Output */}
-        <Handle
-          type="target"
-          position={Position.Left}
-          id="left-target"
-          className="w-3 h-3 !bg-gray-400 border-2 border-white hover:!bg-blue-500 transition-colors"
-        />
-        <Handle
-          type="source"
-          position={Position.Left}
-          id="left-source"
-          className="w-3 h-3 !bg-gray-400 border-2 border-white hover:!bg-blue-500 transition-colors"
-          style={{ left: 0 }}
-        />
+        <Handle type="target" position={Position.Top} id="top-target" className="w-3 h-3 !bg-blue-500" style={{ top: -6 }} />
+        <Handle type="source" position={Position.Top} id="top-source" className="w-3 h-3 !bg-green-500" style={{ top: -6, left: '55%' }} />
+        
+        <Handle type="target" position={Position.Right} id="right-target" className="w-3 h-3 !bg-blue-500" style={{ right: -6 }} />
+        <Handle type="source" position={Position.Right} id="right-source" className="w-3 h-3 !bg-green-500" style={{ right: -6, top: '55%' }} />
+        
+        <Handle type="target" position={Position.Bottom} id="bottom-target" className="w-3 h-3 !bg-blue-500" style={{ bottom: -6 }} />
+        <Handle type="source" position={Position.Bottom} id="bottom-source" className="w-3 h-3 !bg-green-500" style={{ bottom: -6, left: '55%' }} />
+        
+        <Handle type="target" position={Position.Left} id="left-target" className="w-3 h-3 !bg-blue-500" style={{ left: -6 }} />
+        <Handle type="source" position={Position.Left} id="left-source" className="w-3 h-3 !bg-green-500" style={{ left: -6, top: '55%' }} />
 
         {/* Content */}
         <div className="text-center text-white">

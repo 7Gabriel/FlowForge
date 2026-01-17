@@ -1,5 +1,5 @@
 // ========================================
-// C4 Model - Levels
+// C4 Model Levels
 // ========================================
 
 export enum C4Level {
@@ -10,41 +10,49 @@ export enum C4Level {
   }
   
   // ========================================
-  // C4 Model - Node Categories
+  // C4 Node Categories
   // ========================================
   
   export enum C4NodeCategory {
-    // CONTEXT LEVEL
-    PERSON = 'person',                    // Usuário/Ator
-    EXTERNAL_SYSTEM = 'external-system',  // Sistema externo
-    
-    // CONTAINER LEVEL
+    // Context Level
+    USER = 'user',
+    SYSTEM = 'system',
+  
+    // Container Level
     WEB_APP = 'web-app',
     MOBILE_APP = 'mobile-app',
     API = 'api',
     DATABASE = 'database',
-    MESSAGE_BROKER = 'message-broker',
-    FILE_STORAGE = 'file-storage',
-    
-    // COMPONENT LEVEL
+    CACHE = 'cache',
+    MESSAGE_QUEUE = 'message-queue',
+  
+    // AWS Services
+    LAMBDA = 'lambda',
+    API_GATEWAY = 'api-gateway',
+    DYNAMODB = 'dynamodb',
+    S3 = 's3',
+    SQS = 'sqs',
+    SNS = 'sns',
+    SES = 'ses',
+    STEP_FUNCTIONS = 'step-functions',
+  
+    // Component Level
     CONTROLLER = 'controller',
     SERVICE = 'service',
     REPOSITORY = 'repository',
-    ENTITY = 'entity',
-    
-    // CLOUD SERVICES
-    LAMBDA = 'lambda',
-    STEP_FUNCTION = 'step-function',
-    SQS = 'sqs',
-    SNS = 'sns',
-    S3 = 's3',
-    DYNAMODB = 'dynamodb',
-    API_GATEWAY = 'api-gateway',
-    KAFKA_TOPIC = 'kafka-topic',
-    
-    // SAGA PATTERN
-    SAGA_ORCHESTRATOR = 'saga-orchestrator',
-    COMPENSATING_ACTION = 'compensating-action',
+  }
+  
+  // ========================================
+  // C4 Visual Styles
+  // ========================================
+  
+  export enum C4VisualStyle {
+    PERSON = 'person',
+    EXTERNAL_SYSTEM = 'external-system',
+    CONTAINER_WEB = 'container-web',
+    CONTAINER_SERVICE = 'container-service',
+    COMPONENT = 'component',
+    DATABASE = 'database',
   }
   
   // ========================================
@@ -53,85 +61,39 @@ export enum C4Level {
   
   export interface ArchitectureNodeData {
     label: string;
-    category: C4NodeCategory;
-    level: C4Level;
     description?: string;
     technology?: string;
-    
-    // Metadata específica
-    metadata?: {
-      // Para APIs
-      endpoint?: string;
-      method?: string;
-      
-      // Para DBs
-      dbType?: 'sql' | 'nosql';
-      
-      // Para Lambdas/Functions
-      runtime?: string;
-      timeout?: number;
-      memory?: number;
-      
-      // Para Message Brokers
-      topicName?: string;
-      queueName?: string;
-      
-      // Para Saga
-      compensationAction?: string;
-      sagaStep?: number;
-    };
-    
-    // Visual
+    category: C4NodeCategory;
+    level: C4Level;
     color?: string;
     icon?: string;
+    visualStyle?: C4VisualStyle;
+    
+    // Metadata específica por categoria
+    dbType?: 'SQL' | 'NoSQL';
+    endpoint?: string;
+    method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+    runtime?: string;
+    timeout?: number;
+    memory?: number;
+    queueName?: string;
+    topicName?: string;
+    partitions?: number;
+    compensationAction?: 'rollback' | 'retry' | 'ignore' | 'compensate';
   }
   
   // ========================================
-  // Architecture Relationship (Edge)
+  // Group/Container Types
   // ========================================
   
-  export interface ArchitectureRelationship {
-    id: string;
-    source: string;
-    target: string;
-    label?: string;
-    type: RelationshipType;
-    protocol?: string; // HTTP, gRPC, AMQP, etc
-    isCompensation?: boolean; // Para Saga patterns
+  export enum GroupStyle {
+    ORCHESTRATOR = 'orchestrator',
+    SAGA = 'saga',
+    BOUNDED_CONTEXT = 'bounded-context',
+    SYSTEM = 'system',
+    CUSTOM = 'custom',
   }
   
-  export enum RelationshipType {
-    USES = 'uses',                    // A usa B
-    DEPENDS_ON = 'depends-on',        // A depende de B
-    READS_FROM = 'reads-from',        // A lê de B
-    WRITES_TO = 'writes-to',          // A escreve em B
-    PUBLISHES_TO = 'publishes-to',    // A publica em B
-    SUBSCRIBES_TO = 'subscribes-to',  // A se inscreve em B
-    CALLS = 'calls',                  // A chama B (sync)
-    TRIGGERS = 'triggers',            // A dispara B (async)
-    COMPENSATES = 'compensates',      // A compensa B (saga)
-  }
-  
-  // ========================================
-  // Diagram Metadata
-  // ========================================
-  
-  export interface ArchitectureDiagram {
-    id: string;
-    name: string;
-    description: string;
-    level: C4Level;
-    nodes: ArchitectureNodeData[];
-    relationships: ArchitectureRelationship[];
-    metadata: {
-      author?: string;
-      version: string;
-      tags?: string[];
-      createdAt: string;
-      updatedAt: string;
-    };
-  }
-
   export interface GroupNodeData {
     label: string;
     description?: string;
@@ -140,12 +102,4 @@ export enum C4Level {
     borderWidth: number;
     backgroundColor?: string;
     category: 'group';
-  }
-  
-  export enum GroupStyle {
-    ORCHESTRATOR = 'orchestrator',      // Laranja tracejado (Step Functions)
-    SAGA = 'saga',                       // Roxo tracejado
-    BOUNDED_CONTEXT = 'bounded-context', // Azul tracejado (DDD)
-    SYSTEM = 'system',                   // Verde tracejado
-    CUSTOM = 'custom',                   // Customizável
   }
