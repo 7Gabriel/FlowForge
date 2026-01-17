@@ -408,8 +408,8 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 **João Gabriel** - *Software Architect with 15 years of IT experience*
 
-- 💼 LinkedIn: [Your LinkedIn](https://linkedin.com/in/joao-gabriel-matuto)
-- 🐙 GitHub: [@yourusername](https://github.com/7Gabriel)
+- 💼 LinkedIn: [Joao Gabriel](https://linkedin.com/in/joao-gabriel-matuto)
+- 🐙 GitHub: [@7Gabriel](https://github.com/7Gabriel)
 
 
 ---
@@ -448,22 +448,13 @@ If you find **FlowForge** useful, please give it a ⭐ on GitHub!
 ### Main Interface
 ![FlowForge Main Interface](docs/screenshot-main.png)
 
-### C4 Model Nodes
-![C4 Model Components](docs/screenshot-nodes.png)
-
-### Live Simulation
-![Simulation in Action](docs/screenshot-simulation.png)
-
-### Properties Editor
-![Properties Panel](docs/screenshot-properties.png)
-
 ---
 
 <div align="center">
 
 ### 🎨 **FlowForge** - *Forge Your Architecture Flows*
 
-**Made with ❤️ and ☕ by João Gabriel**
+**by João Gabriel**
 
 [⬆ Back to Top](#-flowforge)
 
