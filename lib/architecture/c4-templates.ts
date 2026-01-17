@@ -15,23 +15,42 @@ export const c4Templates: C4Template[] = [
   // CONTEXT LEVEL
   // ========================================
   {
-    category: C4NodeCategory.USER,
-    label: 'User',
+    category: C4NodeCategory.PERSON,
+    label: 'Person',
     description: 'System user or actor',
     level: C4Level.CONTEXT,
     color: '#4CAF50',
     iconName: 'User',
     defaultData: {
-      label: 'User',
+      label: 'Person',
       description: 'A person who uses the system',
       technology: '',
-      category: C4NodeCategory.USER,
+      category: C4NodeCategory.PERSON,
       level: C4Level.CONTEXT,
       color: '#4CAF50',
       icon: 'User',
-      visualStyle: C4VisualStyle.PERSON,
+
     },
   },
+
+  {
+    category: C4NodeCategory.EXTERNAL_SYSTEM,
+    label: 'External System',
+    level: C4Level.CONTEXT,
+    description: 'External software system',
+    iconName: 'Globe',
+    color: '#999999',
+    defaultData: {
+      label: 'External System',
+      description: 'Third-party system',
+      technology: '',
+      category: C4NodeCategory.EXTERNAL_SYSTEM,
+      level: C4Level.CONTEXT,
+      color: '#999999',
+      icon: 'Globe',
+    },
+  },
+  
 
   // ========================================
   // CONTAINER LEVEL
@@ -89,7 +108,6 @@ export const c4Templates: C4Template[] = [
       level: C4Level.CONTAINER,
       color: '#2196F3',
       icon: 'Server',
-      visualStyle: C4VisualStyle.CONTAINER_SERVICE,
     },
   },
 
@@ -108,7 +126,6 @@ export const c4Templates: C4Template[] = [
       level: C4Level.CONTAINER,
       color: '#2196F3',
       icon: 'Database',
-      visualStyle: C4VisualStyle.DATABASE,
     },
   },
 
@@ -127,7 +144,7 @@ export const c4Templates: C4Template[] = [
       level: C4Level.CONTAINER,
       color: '#2196F3',
       icon: 'Zap',
-      visualStyle: C4VisualStyle.DATABASE,
+
     },
   },
 
@@ -146,162 +163,26 @@ export const c4Templates: C4Template[] = [
       level: C4Level.CONTAINER,
       color: '#2196F3',
       icon: 'MessageSquare',
-      visualStyle: C4VisualStyle.CONTAINER_SERVICE,
-    },
-  },
-
-  // ========================================
-  // AWS SERVICES
-  // ========================================
-  {
-    category: C4NodeCategory.LAMBDA,
-    label: 'AWS Lambda',
-    description: 'Serverless function',
-    level: C4Level.CONTAINER,
-    color: '#FF9900',
-    iconName: 'Zap',
-    defaultData: {
-      label: 'Lambda',
-      description: 'Serverless compute',
-      technology: 'AWS Lambda',
-      category: C4NodeCategory.LAMBDA,
-      level: C4Level.CONTAINER,
-      color: '#FF9900',
-      icon: 'Zap',
-      visualStyle: C4VisualStyle.CONTAINER_SERVICE,
+     
     },
   },
 
   {
-    category: C4NodeCategory.API_GATEWAY,
-    label: 'API Gateway',
-    description: 'API management',
+    category: C4NodeCategory.KAFKA_TOPIC,
+    label: 'Kafka Topic',
     level: C4Level.CONTAINER,
-    color: '#FF9900',
-    iconName: 'Network',
+    description: 'Event streaming',
+    iconName: 'Layers', // ⚠️ Ícone representando camadas de eventos
+    color: '#231F20',
     defaultData: {
-      label: 'API Gateway',
-      description: 'Managed API gateway',
-      technology: 'AWS',
-      category: C4NodeCategory.API_GATEWAY,
+      label: 'Kafka Topic',
+      description: 'Kafka',
+      technology: 'Apache Kafka',
+      category: C4NodeCategory.KAFKA_TOPIC,
       level: C4Level.CONTAINER,
-      color: '#FF9900',
-      icon: 'Network',
-      visualStyle: C4VisualStyle.CONTAINER_SERVICE,
-    },
-  },
-
-  {
-    category: C4NodeCategory.DYNAMODB,
-    label: 'DynamoDB',
-    description: 'NoSQL database',
-    level: C4Level.CONTAINER,
-    color: '#FF9900',
-    iconName: 'Database',
-    defaultData: {
-      label: 'DynamoDB',
-      description: 'NoSQL database',
-      technology: 'AWS',
-      category: C4NodeCategory.DYNAMODB,
-      level: C4Level.CONTAINER,
-      color: '#FF9900',
-      icon: 'Database',
-      visualStyle: C4VisualStyle.DATABASE,
-    },
-  },
-
-  {
-    category: C4NodeCategory.S3,
-    label: 'S3',
-    description: 'Object storage',
-    level: C4Level.CONTAINER,
-    color: '#FF9900',
-    iconName: 'Archive',
-    defaultData: {
-      label: 'S3',
-      description: 'Object storage',
-      technology: 'AWS',
-      category: C4NodeCategory.S3,
-      level: C4Level.CONTAINER,
-      color: '#FF9900',
-      icon: 'Archive',
-      visualStyle: C4VisualStyle.DATABASE,
-    },
-  },
-
-  {
-    category: C4NodeCategory.SQS,
-    label: 'SQS',
-    description: 'Message queue',
-    level: C4Level.CONTAINER,
-    color: '#FF9900',
-    iconName: 'Mail',
-    defaultData: {
-      label: 'SQS',
-      description: 'Message queue service',
-      technology: 'AWS',
-      category: C4NodeCategory.SQS,
-      level: C4Level.CONTAINER,
-      color: '#FF9900',
-      icon: 'Mail',
-      visualStyle: C4VisualStyle.CONTAINER_SERVICE,
-    },
-  },
-
-  {
-    category: C4NodeCategory.SNS,
-    label: 'SNS',
-    description: 'Pub/Sub messaging',
-    level: C4Level.CONTAINER,
-    color: '#FF9900',
-    iconName: 'Activity',
-    defaultData: {
-      label: 'SNS',
-      description: 'Notification service',
-      technology: 'AWS',
-      category: C4NodeCategory.SNS,
-      level: C4Level.CONTAINER,
-      color: '#FF9900',
-      icon: 'Activity',
-      visualStyle: C4VisualStyle.CONTAINER_SERVICE,
-    },
-  },
-
-  {
-    category: C4NodeCategory.SES,
-    label: 'Amazon SES',
-    description: 'Email service',
-    level: C4Level.CONTAINER,
-    color: '#FF5722',
-    iconName: 'Mail',
-    defaultData: {
-      label: 'Amazon SES',
-      description: 'Cloud-based email service',
-      technology: 'AWS',
-      category: C4NodeCategory.SES,
-      level: C4Level.CONTAINER,
-      color: '#FF5722',
-      icon: 'Mail',
-      visualStyle: C4VisualStyle.EXTERNAL_SYSTEM,
-    },
-  },
-
-  {
-    category: C4NodeCategory.STEP_FUNCTIONS,
-    label: 'Step Functions',
-    description: 'Workflow orchestration',
-    level: C4Level.CONTAINER,
-    color: '#FF9900',
-    iconName: 'GitBranch',
-    defaultData: {
-      label: 'Step Functions',
-      description: 'Serverless orchestration',
-      technology: 'AWS',
-      category: C4NodeCategory.STEP_FUNCTIONS,
-      level: C4Level.CONTAINER,
-      color: '#FF9900',
-      icon: 'GitBranch',
-      visualStyle: C4VisualStyle.CONTAINER_SERVICE,
+      color: '#231F20',
+      icon: 'Layers',
+	
     },
   },
 

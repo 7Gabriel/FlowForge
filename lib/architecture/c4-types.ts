@@ -15,8 +15,10 @@ export enum C4Level {
   
   export enum C4NodeCategory {
     // Context Level
-    USER = 'user',
+    PERSON = 'person',
+    EXTERNAL_SYSTEM = 'external-system',
     SYSTEM = 'system',
+    KAFKA_TOPIC = 'kafka-topic',
   
     // Container Level
     WEB_APP = 'web-app',

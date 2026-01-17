@@ -2,9 +2,12 @@ import React, { memo } from 'react';
 import { Handle, Position, NodeProps } from 'reactflow';
 import { NodeResizer } from '@reactflow/node-resizer';
 import '@reactflow/node-resizer/dist/style.css';
+import { getIconByName } from '@/lib/architecture/icon-registry';
 import { User } from 'lucide-react';
 
 export const PersonNode = memo(({ data, selected }: NodeProps) => {
+  const IconComponent = data?.icon ? (getIconByName(data.icon) || User) : User;
+
   return (
     <>
       <NodeResizer
@@ -87,7 +90,9 @@ export const PersonNode = memo(({ data, selected }: NodeProps) => {
         />
 
         {/* Conteúdo */}
-        <div className="text-6xl mb-2">👤</div>
+        <div className="mb-2">
+            <IconComponent className="w-10 h-10 text-blue-700" />
+          </div>
         <div className="font-bold text-base text-green-900 text-center">
           {data?.label || 'User'}
         </div>

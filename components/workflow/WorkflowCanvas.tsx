@@ -300,10 +300,8 @@ export function WorkflowCanvas() {
         };
       }
   
-      console.log('✅ Adding node to canvas:', newNode); // ⚠️ DEBUG
       setNodes((nds) => {
         const updated = nds.concat(newNode);
-        console.log('✅ Total nodes after add:', updated.length); // ⚠️ DEBUG
         return updated;
       });
     },
@@ -327,12 +325,10 @@ export function WorkflowCanvas() {
         if (selectedNodes.length > 0 || selectedEdges.length > 0) {
           if (selectedNodes.length > 0) {
             setNodes((nds) => nds.filter((node) => !node.selected));
-            console.log('🗑️ Deleted nodes:', selectedNodes.length);
           }
           
           if (selectedEdges.length > 0) {
             setEdges((eds) => eds.filter((edge) => !edge.selected));
-            console.log('🗑️ Deleted edges:', selectedEdges.length);
           }
         }
       }
