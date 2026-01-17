@@ -3,7 +3,7 @@ import { NodeHandler, ExecutionContext, NodeExecutionResult, NodeExecutionStatus
 import { LLMNodeData } from '../../types';
 import { interpolateVariables } from '../evaluator';
 
-export class LLMHandler implements NodeHandler {  // ⚠️ Adicionar export
+export class LLMHandler implements NodeHandler {
   async execute(node: Node<LLMNodeData>, context: ExecutionContext): Promise<NodeExecutionResult> {
     const startTime = Date.now();
     const logs: string[] = [];

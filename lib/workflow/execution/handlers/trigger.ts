@@ -2,7 +2,7 @@ import { Node } from 'reactflow';
 import { NodeHandler, ExecutionContext, NodeExecutionResult, NodeExecutionStatus } from '../types';
 import { TriggerNodeData } from '../../types';
 
-export class TriggerHandler implements NodeHandler {  // ⚠️ Adicionar export
+export class TriggerHandler implements NodeHandler {
   async execute(node: Node<TriggerNodeData>, context: ExecutionContext): Promise<NodeExecutionResult> {
     const startTime = Date.now();
     

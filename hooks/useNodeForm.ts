@@ -14,7 +14,6 @@ export function useNodeForm<T extends Record<string, any>>({
 }: UseNodeFormOptions<T>) {
   const [formData, setFormData] = useState<T>(initialData);
 
-  // Sincronizar quando initialData mudar (troca de node selecionado)
   useEffect(() => {
     setFormData(initialData);
   }, [initialData]);
@@ -28,7 +27,7 @@ export function useNodeForm<T extends Record<string, any>>({
     [onUpdate, debounceMs]
   );
 
-  // Handler para atualizar campo
+
   const updateField = useCallback(
     (field: keyof T, value: any) => {
       setFormData((prev) => {

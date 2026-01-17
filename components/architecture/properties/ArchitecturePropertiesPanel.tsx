@@ -11,7 +11,7 @@ export function ArchitecturePropertiesPanel() {
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [, forceUpdate] = useState(0);
 
-  // Polling para detectar mudanças de seleção
+
   useEffect(() => {
     const checkSelection = () => {
       try {
@@ -27,16 +27,15 @@ export function ArchitecturePropertiesPanel() {
       }
     };
 
-    // Check imediatamente
+
     checkSelection();
 
-    // Check a cada 100ms
+
     const interval = setInterval(checkSelection, 100);
 
     return () => clearInterval(interval);
   }, [reactFlow, selectedNodeId]);
 
-  // Pegar o node selecionado
   let selectedNode = null;
   let allNodes = [];
   
@@ -68,7 +67,7 @@ export function ArchitecturePropertiesPanel() {
         </p>
       </div>
 
-      {/* Content */}
+      
       <div className="flex-1 overflow-y-auto">
         {selectedNode ? (
           isGroup ? (

@@ -17,7 +17,7 @@ export function GroupPropertiesEditor({ nodeId }: GroupPropertiesEditorProps) {
   const [borderStyle, setBorderStyle] = useState<'solid' | 'dashed' | 'dotted'>('dashed');
   const [borderWidth, setBorderWidth] = useState(2);
 
-  // Carregar dados do node
+
   useEffect(() => {
     const nodes = getNodes();
     const node = nodes.find((n) => n.id === nodeId);
@@ -51,7 +51,7 @@ export function GroupPropertiesEditor({ nodeId }: GroupPropertiesEditorProps) {
 
   return (
     <div className="p-4 space-y-4">
-      {/* Label */}
+ 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Label
@@ -68,7 +68,7 @@ export function GroupPropertiesEditor({ nodeId }: GroupPropertiesEditorProps) {
         />
       </div>
 
-      {/* Description */}
+  
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Description
@@ -85,7 +85,7 @@ export function GroupPropertiesEditor({ nodeId }: GroupPropertiesEditorProps) {
         />
       </div>
 
-      {/* Border Color */}
+  
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Border Color
@@ -116,7 +116,6 @@ export function GroupPropertiesEditor({ nodeId }: GroupPropertiesEditorProps) {
         </div>
       </div>
 
-      {/* Background Color */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Background Color
@@ -144,7 +143,7 @@ export function GroupPropertiesEditor({ nodeId }: GroupPropertiesEditorProps) {
         </div>
       </div>
 
-      {/* Border Style */}
+     
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Border Style
@@ -164,7 +163,7 @@ export function GroupPropertiesEditor({ nodeId }: GroupPropertiesEditorProps) {
         </select>
       </div>
 
-      {/* Border Width */}
+     
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Border Width: {borderWidth}px

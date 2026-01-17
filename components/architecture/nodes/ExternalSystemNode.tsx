@@ -25,7 +25,7 @@ export const ExternalSystemNode = memo(({ data, selected }: NodeProps) => {
           borderRadius: '8px',
         }}
       >
-         {/* Handles Bidirecionais */}
+ 
          <Handle type="target" position={Position.Top} id="top-target" className="w-3 h-3 !bg-blue-500" style={{ top: -6 }} />
         <Handle type="source" position={Position.Top} id="top-source" className="w-3 h-3 !bg-green-500" style={{ top: -6, left: '55%' }} />
         

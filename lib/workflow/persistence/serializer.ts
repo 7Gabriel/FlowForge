@@ -1,9 +1,7 @@
 import { Node, Edge, Viewport } from 'reactflow';
 import { SerializedWorkflow, WorkflowMetadata, WORKFLOW_VERSION } from './types';
 
-// ========================================
-// Serializar React Flow State → JSON
-// ========================================
+
 
 export function serializeWorkflow(
   nodes: Node[],
@@ -35,9 +33,7 @@ export function serializeWorkflow(
   };
 }
 
-// ========================================
-// Deserializar JSON → React Flow State
-// ========================================
+
 
 export function deserializeWorkflow(serialized: SerializedWorkflow): {
   nodes: Node[];
@@ -53,16 +49,14 @@ export function deserializeWorkflow(serialized: SerializedWorkflow): {
   };
 }
 
-// ========================================
-// Validar estrutura de workflow
-// ========================================
+
 
 export function validateWorkflow(data: any): data is SerializedWorkflow {
   if (!data || typeof data !== 'object') {
     return false;
   }
 
-  // Validar metadata
+
   if (!data.metadata || typeof data.metadata !== 'object') {
     return false;
   }
@@ -78,7 +72,6 @@ export function validateWorkflow(data: any): data is SerializedWorkflow {
     return false;
   }
 
-  // Validar nodes e edges
   if (!Array.isArray(data.nodes) || !Array.isArray(data.edges)) {
     return false;
   }
@@ -86,9 +79,6 @@ export function validateWorkflow(data: any): data is SerializedWorkflow {
   return true;
 }
 
-// ========================================
-// Helper: Gerar ID único
-// ========================================
 
 function generateWorkflowId(): string {
   return `wf_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;

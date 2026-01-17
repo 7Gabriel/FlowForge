@@ -32,13 +32,13 @@ export function NodePalette() {
     });
   };
 
-  // Filtrar nodes por busca
+
   const filteredTemplates = nodeTemplates.filter((template) =>
     template.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
     template.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Agrupar por categoria
+
   const groupedTemplates = filteredTemplates.reduce((acc, template) => {
     if (!acc[template.category]) {
       acc[template.category] = [];
@@ -49,13 +49,13 @@ export function NodePalette() {
 
   return (
     <div className="w-80 h-screen bg-white border-r border-gray-200 flex flex-col">
-      {/* Header */}
+   
       <div className="p-4 border-b border-gray-200">
         <h2 className="text-lg font-semibold text-gray-800 mb-3">
           Node Palette
         </h2>
         
-        {/* Search */}
+       
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
@@ -68,7 +68,7 @@ export function NodePalette() {
         </div>
       </div>
 
-      {/* Node List */}
+     
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {Object.entries(groupedTemplates).map(([category, templates]) => {
           const cat = category as Category;
@@ -76,7 +76,7 @@ export function NodePalette() {
 
           return (
             <div key={category}>
-              {/* Category Header */}
+             
               <button
                 onClick={() => toggleCategory(cat)}
                 className="flex items-center gap-2 w-full text-left mb-2 text-sm font-semibold text-gray-600 hover:text-gray-800 transition-colors"
@@ -92,7 +92,7 @@ export function NodePalette() {
                 </span>
               </button>
 
-              {/* Category Items */}
+            
               {isExpanded && (
                 <div className="space-y-2">
                   {templates.map((template) => (
@@ -104,7 +104,7 @@ export function NodePalette() {
           );
         })}
 
-        {/* Empty State */}
+    
         {filteredTemplates.length === 0 && (
           <div className="text-center py-8 text-gray-400">
             <Search className="w-8 h-8 mx-auto mb-2 opacity-50" />
@@ -113,7 +113,7 @@ export function NodePalette() {
         )}
       </div>
 
-      {/* Footer */}
+
       <div className="p-4 border-t border-gray-200 text-xs text-gray-500">
         Drag & drop nodes to the canvas
       </div>

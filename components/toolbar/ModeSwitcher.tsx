@@ -14,13 +14,10 @@ export function ModeSwitcher() {
   const { clearResults } = useWorkflowExecution();
   const { resetSimulation } = useArchitectureSimulation();
 
-  // ========================================
-  // ⚠️ NOVO: Limpar ao trocar de mode
-  // ========================================
+
   const handleModeChange = (newMode: AppMode) => {
     if (newMode === mode) return;
 
-    // Confirmar se há nodes no canvas
     const hasNodes = document.querySelectorAll('.react-flow__node').length > 0;
     
     if (hasNodes) {
@@ -31,13 +28,13 @@ export function ModeSwitcher() {
       if (!confirm) return;
     }
 
-    // Limpar tudo
+
     setNodes([]);
     setEdges([]);
     clearResults();
     resetSimulation();
 
-    // Trocar mode
+
     setMode(newMode);
     console.log(`✅ Switched to ${newMode} mode`);
   };

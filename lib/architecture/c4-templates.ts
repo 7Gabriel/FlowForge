@@ -11,9 +11,7 @@ export interface C4Template {
 }
 
 export const c4Templates: C4Template[] = [
-  // ========================================
-  // CONTEXT LEVEL
-  // ========================================
+
   {
     category: C4NodeCategory.PERSON,
     label: 'Person',
@@ -52,9 +50,7 @@ export const c4Templates: C4Template[] = [
   },
   
 
-  // ========================================
-  // CONTAINER LEVEL
-  // ========================================
+
   {
     category: C4NodeCategory.WEB_APP,
     label: 'Web Application',
@@ -172,7 +168,7 @@ export const c4Templates: C4Template[] = [
     label: 'Kafka Topic',
     level: C4Level.CONTAINER,
     description: 'Event streaming',
-    iconName: 'Layers', // ⚠️ Ícone representando camadas de eventos
+    iconName: 'Layers', 
     color: '#231F20',
     defaultData: {
       label: 'Kafka Topic',
@@ -186,9 +182,6 @@ export const c4Templates: C4Template[] = [
     },
   },
 
-  // ========================================
-  // COMPONENT LEVEL
-  // ========================================
   {
     category: C4NodeCategory.CONTROLLER,
     label: 'Controller',

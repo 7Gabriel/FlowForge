@@ -25,7 +25,7 @@ export const PersonNode = memo(({ data, selected }: NodeProps) => {
           borderRadius: '8px',
         }}
       >
-        {/* TOP - Target e Source */}
+    
         <Handle 
           type="target" 
           position={Position.Top} 
@@ -41,7 +41,7 @@ export const PersonNode = memo(({ data, selected }: NodeProps) => {
           style={{ top: -6, left: '55%' }}
         />
 
-        {/* RIGHT - Target e Source */}
+ 
         <Handle 
           type="target" 
           position={Position.Right} 
@@ -57,7 +57,7 @@ export const PersonNode = memo(({ data, selected }: NodeProps) => {
           style={{ right: -6, top: '55%' }}
         />
 
-        {/* BOTTOM - Target e Source */}
+
         <Handle 
           type="target" 
           position={Position.Bottom} 
@@ -73,7 +73,7 @@ export const PersonNode = memo(({ data, selected }: NodeProps) => {
           style={{ bottom: -6, left: '55%' }}
         />
 
-        {/* LEFT - Target e Source */}
+   
         <Handle 
           type="target" 
           position={Position.Left} 
@@ -89,7 +89,7 @@ export const PersonNode = memo(({ data, selected }: NodeProps) => {
           style={{ left: -6, top: '55%' }}
         />
 
-        {/* Conteúdo */}
+     
         <div className="mb-2">
             <IconComponent className="w-10 h-10 text-blue-700" />
           </div>

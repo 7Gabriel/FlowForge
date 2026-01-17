@@ -21,7 +21,7 @@ export function ArchitectureNodeEditor({ node, onUpdate }: ArchitectureNodeEdito
 
   return (
     <div className="p-4 space-y-4">
-      {/* Label */}
+ 
       <FormField
         label="Label"
         description="Display name of the component"
@@ -33,7 +33,7 @@ export function ArchitectureNodeEditor({ node, onUpdate }: ArchitectureNodeEdito
         />
       </FormField>
 
-      {/* Technology */}
+   
       <FormField
         label="Technology"
         description="Tech stack or platform"
@@ -45,7 +45,7 @@ export function ArchitectureNodeEditor({ node, onUpdate }: ArchitectureNodeEdito
         />
       </FormField>
 
-      {/* Description */}
+
       <FormField
         label="Description"
         description="Brief description of the component"
@@ -58,15 +58,12 @@ export function ArchitectureNodeEditor({ node, onUpdate }: ArchitectureNodeEdito
         />
       </FormField>
 
-      {/* Metadata Específica por Tipo */}
+    
       {renderMetadataFields(node.data.category, formData, updateField)}
     </div>
   );
 }
 
-// ========================================
-// Metadata Fields por Categoria
-// ========================================
 
 function renderMetadataFields(
   category: string,

@@ -57,7 +57,7 @@ export function ExportImageDialog({ open, onOpenChange, defaultFileName = 'archi
         </DialogHeader>
 
         <div className="space-y-4 py-4">
-          {/* File Name */}
+       
           <div className="space-y-2">
             <Label htmlFor="fileName">File Name</Label>
             <Input
@@ -72,7 +72,7 @@ export function ExportImageDialog({ open, onOpenChange, defaultFileName = 'archi
             </p>
           </div>
 
-          {/* Image Info */}
+     
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm">
             <div className="font-semibold text-blue-900 mb-1">Export Settings:</div>
             <div className="text-blue-700 space-y-0.5">
@@ -82,7 +82,7 @@ export function ExportImageDialog({ open, onOpenChange, defaultFileName = 'archi
             </div>
           </div>
 
-          {/* Format Comparison */}
+       
           <div className="grid grid-cols-2 gap-3">
             <div className="border border-gray-200 rounded-lg p-3 text-center">
               <Image className="w-6 h-6 mx-auto mb-2 text-purple-600" />

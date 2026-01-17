@@ -1,7 +1,7 @@
 import React, { InputHTMLAttributes } from 'react';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  // Extensível para adicionar props customizadas
+
 }
 
 export function Input({ className = '', ...props }: InputProps) {

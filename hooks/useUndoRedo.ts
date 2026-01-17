@@ -30,7 +30,7 @@ export function useUndoRedo(
     const newHistory = history.slice(0, currentIndex + 1);
     newHistory.push({ nodes, edges });
     
-    // Limit history to 50 states
+ 
     if (newHistory.length > 50) {
       newHistory.shift();
     } else {
@@ -51,7 +51,7 @@ export function useUndoRedo(
     }
   }, [currentIndex, history, setNodes, setEdges]);
 
-  // Redo
+
   const redo = useCallback(() => {
     if (currentIndex < history.length - 1) {
       const nextState = history[currentIndex + 1];
@@ -62,7 +62,7 @@ export function useUndoRedo(
     }
   }, [currentIndex, history, setNodes, setEdges]);
 
-  // Keyboard shortcuts
+
   useEffect(() => {
     const handleKeyDown = (event: globalThis.KeyboardEvent) => {
       if ((event.ctrlKey || event.metaKey) && event.key === 'z' && !event.shiftKey) {

@@ -11,7 +11,7 @@ interface BaseNodeProps {
   hasInput?: boolean;
   hasOutput?: boolean;
   children?: ReactNode;
-  executionStatus?: NodeExecutionStatus; // ⚠️ Novo
+  executionStatus?: NodeExecutionStatus;
 }
 
 const colorClasses = {
@@ -52,9 +52,7 @@ const colorClasses = {
   },
 };
 
-// ========================================
-// Status Badge Component
-// ========================================
+
 function ExecutionStatusBadge({ status }: { status: NodeExecutionStatus }) {
   switch (status) {
     case NodeExecutionStatus.RUNNING:
@@ -88,11 +86,11 @@ export const BaseNode = memo(({
   hasInput = false,
   hasOutput = false,
   children,
-  executionStatus, // ⚠️ Novo
+  executionStatus,
 }: BaseNodeProps) => {
   const colors = colorClasses[color];
 
-  // Adicionar animação durante execução
+ 
   const isRunning = executionStatus === NodeExecutionStatus.RUNNING;
 
   return (
@@ -105,10 +103,10 @@ export const BaseNode = memo(({
         ${selected ? 'shadow-lg' : ''}
       `}
     >
-      {/* Execution Status Badge */}
+    
       {executionStatus && <ExecutionStatusBadge status={executionStatus} />}
 
-      {/* Input Handle */}
+    
       {hasInput && (
         <Handle
           type="target"
@@ -117,7 +115,7 @@ export const BaseNode = memo(({
         />
       )}
 
-      {/* Header */}
+   
       <div className="flex items-center gap-2 mb-2">
         <div className={`p-1.5 ${colors.bg} rounded`}>
           <Icon className={`w-4 h-4 ${colors.text}`} />
@@ -127,14 +125,14 @@ export const BaseNode = memo(({
         </div>
       </div>
 
-      {/* Custom Content */}
+     
       {children && (
         <div className="text-xs text-gray-500 space-y-1">
           {children}
         </div>
       )}
 
-      {/* Output Handle */}
+   
       {hasOutput && (
         <Handle
           type="source"

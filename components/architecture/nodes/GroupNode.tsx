@@ -7,7 +7,7 @@ import { GroupNodeData } from '@/lib/architecture/c4-types';
 export const GroupNode = memo(({ data, selected }: NodeProps<GroupNodeData>) => {
   return (
     <>
-      {/* Resizer para ajustar tamanho */}
+   
       <NodeResizer
         color={data.color}
         isVisible={selected}
@@ -15,7 +15,7 @@ export const GroupNode = memo(({ data, selected }: NodeProps<GroupNodeData>) => 
         minHeight={200}
       />
 
-      {/* Container */}
+
       <div
         className="w-full h-full rounded-lg relative overflow-visible"
         style={{
@@ -23,7 +23,7 @@ export const GroupNode = memo(({ data, selected }: NodeProps<GroupNodeData>) => 
           backgroundColor: data.backgroundColor || 'transparent',
         }}
       >
-        {/* Header/Badge no topo esquerdo FORA da borda */}
+     
         <div
           className="absolute px-3 py-1 rounded font-semibold text-xs shadow-md"
           style={{
@@ -37,7 +37,7 @@ export const GroupNode = memo(({ data, selected }: NodeProps<GroupNodeData>) => 
           {data.label}
         </div>
 
-        {/* Description (opcional) - dentro do container */}
+      
         {data.description && (
           <div
             className="absolute top-3 left-3 text-xs italic opacity-60"
@@ -50,7 +50,6 @@ export const GroupNode = memo(({ data, selected }: NodeProps<GroupNodeData>) => 
           </div>
         )}
 
-        {/* Content Area - nodes filhos renderizam aqui */}
         <div className="w-full h-full" />
       </div>
     </>

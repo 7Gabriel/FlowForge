@@ -1,16 +1,12 @@
 import { SerializedWorkflow, WorkflowListItem, STORAGE_KEY_PREFIX, STORAGE_KEY_LIST } from './types';
 
-// ========================================
-// Helper: Verificar se está no browser
-// ========================================
+
 const isBrowser = typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
 
-// ========================================
-// LocalStorage Wrapper com Type Safety
-// ========================================
+
 
 class WorkflowStorage {
-  // Salvar workflow
+
   save(workflow: SerializedWorkflow): void {
     if (!isBrowser) {
       console.warn('localStorage not available (SSR)');
@@ -28,7 +24,6 @@ class WorkflowStorage {
     }
   }
 
-  // Carregar workflow por ID
   load(workflowId: string): SerializedWorkflow | null {
     if (!isBrowser) {
       console.warn('localStorage not available (SSR)');
@@ -52,7 +47,7 @@ class WorkflowStorage {
     }
   }
 
-  // Deletar workflow
+
   delete(workflowId: string): void {
     if (!isBrowser) {
       console.warn('localStorage not available (SSR)');
@@ -70,7 +65,7 @@ class WorkflowStorage {
     }
   }
 
-  // Listar todos os workflows
+
   list(): WorkflowListItem[] {
     if (!isBrowser) {
       console.warn('localStorage not available (SSR)');
@@ -89,7 +84,7 @@ class WorkflowStorage {
     }
   }
 
-  // Atualizar lista de workflows (metadata)
+
   private updateWorkflowList(workflow: SerializedWorkflow): void {
     if (!isBrowser) return;
 
@@ -111,13 +106,13 @@ class WorkflowStorage {
       list.push(listItem);
     }
 
-    // Ordenar por data (mais recente primeiro)
+
     list.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
 
     localStorage.setItem(STORAGE_KEY_LIST, JSON.stringify(list));
   }
 
-  // Remover da lista
+
   private removeFromWorkflowList(workflowId: string): void {
     if (!isBrowser) return;
 
@@ -126,7 +121,7 @@ class WorkflowStorage {
     localStorage.setItem(STORAGE_KEY_LIST, JSON.stringify(filtered));
   }
 
-  // Limpar tudo (útil para debug)
+
   clear(): void {
     if (!isBrowser) {
       console.warn('localStorage not available (SSR)');
@@ -142,5 +137,5 @@ class WorkflowStorage {
   }
 }
 
-// Singleton instance
+
 export const workflowStorage = new WorkflowStorage();

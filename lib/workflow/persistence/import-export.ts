@@ -1,9 +1,6 @@
 import { SerializedWorkflow } from './types';
 import { validateWorkflow } from './serializer';
 
-// ========================================
-// Export workflow como arquivo JSON
-// ========================================
 
 export function exportWorkflowToFile(workflow: SerializedWorkflow): void {
   const json = JSON.stringify(workflow, null, 2);
@@ -21,9 +18,7 @@ export function exportWorkflowToFile(workflow: SerializedWorkflow): void {
   console.log('✅ Workflow exported:', workflow.metadata.name);
 }
 
-// ========================================
-// Import workflow de arquivo JSON
-// ========================================
+
 
 export function importWorkflowFromFile(): Promise<SerializedWorkflow> {
   return new Promise((resolve, reject) => {
@@ -59,9 +54,6 @@ export function importWorkflowFromFile(): Promise<SerializedWorkflow> {
   });
 }
 
-// ========================================
-// Export como texto (para clipboard)
-// ========================================
 
 export function exportWorkflowToClipboard(workflow: SerializedWorkflow): void {
   const json = JSON.stringify(workflow, null, 2);
@@ -75,9 +67,6 @@ export function exportWorkflowToClipboard(workflow: SerializedWorkflow): void {
   );
 }
 
-// ========================================
-// Import de texto (do clipboard)
-// ========================================
 
 export async function importWorkflowFromClipboard(): Promise<SerializedWorkflow> {
   try {

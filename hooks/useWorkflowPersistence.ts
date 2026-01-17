@@ -8,9 +8,7 @@ import { WorkflowMetadata } from '@/lib/workflow/persistence/types';
 export function useWorkflowPersistence() {
   const { getNodes, getEdges, setNodes, setEdges, getViewport, setViewport } = useReactFlow();
 
-  // ========================================
-  // Save to localStorage
-  // ========================================
+
   const saveWorkflow = useCallback(
     (metadata?: Partial<WorkflowMetadata>) => {
       const nodes = getNodes();
@@ -25,9 +23,6 @@ export function useWorkflowPersistence() {
     [getNodes, getEdges, getViewport]
   );
 
-  // ========================================
-  // Load from localStorage
-  // ========================================
   const loadWorkflow = useCallback(
     (workflowId: string) => {
       const serialized = workflowStorage.load(workflowId);
@@ -45,23 +40,17 @@ export function useWorkflowPersistence() {
     [setNodes, setEdges, setViewport]
   );
 
-  // ========================================
-  // Delete workflow
-  // ========================================
+  
   const deleteWorkflow = useCallback((workflowId: string) => {
     workflowStorage.delete(workflowId);
   }, []);
 
-  // ========================================
-  // List all workflows
-  // ========================================
+
   const listWorkflows = useCallback(() => {
     return workflowStorage.list();
   }, []);
 
-  // ========================================
-  // Export to file
-  // ========================================
+
   const exportToFile = useCallback(
     (metadata?: Partial<WorkflowMetadata>) => {
       const nodes = getNodes();
@@ -74,9 +63,7 @@ export function useWorkflowPersistence() {
     [getNodes, getEdges, getViewport]
   );
 
-  // ========================================
-  // Import from file
-  // ========================================
+  
   const importFromFile = useCallback(async () => {
     const serialized = await importWorkflowFromFile();
     const { nodes, edges, viewport } = deserializeWorkflow(serialized);
@@ -88,9 +75,7 @@ export function useWorkflowPersistence() {
     return serialized.metadata;
   }, [setNodes, setEdges, setViewport]);
 
-  // ========================================
-  // Clear canvas
-  // ========================================
+
   const clearWorkflow = useCallback(() => {
     setNodes([]);
     setEdges([]);

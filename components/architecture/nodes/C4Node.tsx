@@ -24,7 +24,7 @@ export const C4Node = memo(({ data, selected }: NodeProps<ArchitectureNodeData>)
 
   return (
     <>
-      {/* Resizer */}
+    
       <NodeResizer
         color={data.color || '#438DD5'}
         isVisible={selected}
@@ -47,16 +47,11 @@ export const C4Node = memo(({ data, selected }: NodeProps<ArchitectureNodeData>)
           height: '100%',
         }}
       >
-        {/* Execution Status Badge */}
         {simulationStatus === 'executing' && (
           <div className="absolute -top-2 -right-2 bg-green-500 rounded-full p-1.5 shadow-lg">
             <Loader2 className="w-4 h-4 text-white animate-spin" />
           </div>
         )}
-
-        {/* ========================================
-            HANDLES BIDIRECIONAIS (8 handles total)
-            ======================================== */}
 
         <Handle type="target" position={Position.Top} id="top-target" className="w-3 h-3 !bg-blue-500" style={{ top: -6 }} />
         <Handle type="source" position={Position.Top} id="top-source" className="w-3 h-3 !bg-green-500" style={{ top: -6, left: '55%' }} />
@@ -70,7 +65,6 @@ export const C4Node = memo(({ data, selected }: NodeProps<ArchitectureNodeData>)
         <Handle type="target" position={Position.Left} id="left-target" className="w-3 h-3 !bg-blue-500" style={{ left: -6 }} />
         <Handle type="source" position={Position.Left} id="left-source" className="w-3 h-3 !bg-green-500" style={{ left: -6, top: '55%' }} />
 
-        {/* Content */}
         <div className="text-center text-white">
           <div className="flex justify-center mb-2">
             <IconComponent className="w-8 h-8" />

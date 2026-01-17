@@ -5,7 +5,7 @@ import {
     LucideIcon
   } from 'lucide-react';
   
-  // Registry de ícones
+
   export const iconRegistry: Record<string, LucideIcon> = {
     User,
     Globe,

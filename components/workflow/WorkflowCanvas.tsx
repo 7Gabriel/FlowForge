@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useRef, DragEvent, useState, KeyboardEvent } from 'react';
+import { useCallback, useRef, DragEvent, useState, KeyboardEvent, useEffect } from 'react';
 import ReactFlow, {
   Background,
   Controls,
@@ -43,18 +43,18 @@ import { useAppMode } from '@/contexts/AppModeContext';
 import { AppMode } from '@/lib/types';
 
 const nodeTypes: NodeTypes = {
-  // Workflow nodes
+ 
   [NodeType.TRIGGER]: TriggerNode,
   [NodeType.LLM]: LLMNode,
   [NodeType.HTTP]: HTTPNode,
   [NodeType.CONDITION]: ConditionNode,
   [NodeType.OUTPUT]: OutputNode,
   
-  // Architecture nodes (antigo - manter por compatibilidade)
+
   'architecture': C4Node,
   'group': GroupNode,
   
-  // C4 Visual Styles
+
   'person': PersonNode,
   'external-system': ExternalSystemNode,
   'container-web': ContainerWebNode,
@@ -101,10 +101,81 @@ export function WorkflowCanvas() {
       color: '#94A3B8',
     },
     style: {
-      strokeWidth: 3, // ⚠️ Aumentado de 2 para 3
+      strokeWidth: 3,
       stroke: '#94A3B8',
     },
   };
+
+  useEffect(() => {
+    const handleNodeHighlight = (event: any) => {
+      const { nodeId, status } = event.detail;
+      
+      setNodes((nodes) =>
+        nodes.map((node) => {
+          if (node.id === nodeId) {
+            let borderColor = '#2196F3';
+            let borderWidth = '3px';
+            let boxShadow = 'none';
+            
+            if (status === 'executing') {
+              borderColor = '#FFA500';
+              borderWidth = '4px';
+              boxShadow = '0 0 20px rgba(255, 165, 0, 0.6)';
+            } else if (status === 'success') {
+              borderColor = '#4CAF50';
+              borderWidth = '4px';
+              boxShadow = '0 0 20px rgba(76, 175, 80, 0.6)';
+            } else if (status === 'error') {
+              borderColor = '#F44336';
+              borderWidth = '4px';
+              boxShadow = '0 0 20px rgba(244, 67, 54, 0.6)';
+            }
+            
+            return {
+              ...node,
+              style: {
+                ...node.style,
+                borderColor,
+                borderWidth,
+                boxShadow,
+                transition: 'all 0.3s ease',
+              },
+            };
+          }
+          return node;
+        })
+      );
+    };
+
+    const handleEdgeHighlight = (event: any) => {
+      const { edgeId, highlight } = event.detail;
+      
+      setEdges((edges) =>
+        edges.map((edge) => {
+          if (edge.id === edgeId) {
+            return {
+              ...edge,
+              animated: highlight,
+              style: {
+                ...edge.style,
+                stroke: highlight ? '#FFA500' : '#3B82F6',
+                strokeWidth: highlight ? 4 : 3,
+              },
+            };
+          }
+          return edge;
+        })
+      );
+    };
+
+    window.addEventListener('architecture:highlight-node', handleNodeHighlight as EventListener);
+    window.addEventListener('architecture:highlight-edge', handleEdgeHighlight as EventListener);
+
+    return () => {
+      window.removeEventListener('architecture:highlight-node', handleNodeHighlight as EventListener);
+      window.removeEventListener('architecture:highlight-edge', handleEdgeHighlight as EventListener);
+    };
+  }, [setNodes, setEdges]);
 
   const onConnect: OnConnect = useCallback(
     (connection: Connection) => {
@@ -121,9 +192,9 @@ export function WorkflowCanvas() {
           color: '#3B82F6',
         },
         style: {
-          strokeWidth: 3, // ⚠️ Aumentado
+          strokeWidth: 3, 
           stroke: '#3B82F3',
-          cursor: 'pointer', // ⚠️ Cursor pointer
+          cursor: 'pointer', 
         },
         data: {
           label: '',
@@ -170,8 +241,7 @@ export function WorkflowCanvas() {
   
       const nodeType = event.dataTransfer.getData('application/reactflow');
       const dragType = event.dataTransfer.getData('nodeType');
-  
-      console.log('📦 Drop event:', { nodeType, dragType }); // ⚠️ DEBUG
+
   
       if (!nodeType) {
         console.error('❌ No nodeType found');
@@ -183,7 +253,6 @@ export function WorkflowCanvas() {
         y: event.clientY,
       });
   
-      console.log('📍 Drop position:', position); // ⚠️ DEBUG
   
       let newNode: Node;
   
@@ -193,8 +262,7 @@ export function WorkflowCanvas() {
           console.error('❌ Group template not found:', nodeType);
           return;
         }
-  
-        console.log('✅ Creating group node:', template.label); // ⚠️ DEBUG
+
   
         newNode = {
           id: `group-${Date.now()}`,
@@ -221,8 +289,7 @@ export function WorkflowCanvas() {
           console.error('❌ Architecture template not found:', nodeType);
           return;
         }
-  
-        console.log('✅ Creating architecture node:', template.label); // ⚠️ DEBUG
+
   
         const visualStyle = template.defaultData.visualStyle;
         let nodeTypeStr = 'architecture';
@@ -265,8 +332,6 @@ export function WorkflowCanvas() {
             nodeWidth = 180;
             nodeHeight = 140;
         }
-  
-        console.log('✅ Node type determined:', nodeTypeStr); // ⚠️ DEBUG
   
         newNode = {
           id: `arch-${Date.now()}`,
@@ -335,6 +400,8 @@ export function WorkflowCanvas() {
     },
     [nodes, edges, setNodes, setEdges]
   );
+
+  
 
   return (
     <div 

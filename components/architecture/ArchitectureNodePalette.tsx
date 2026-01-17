@@ -41,20 +41,20 @@ export function ArchitectureNodePalette() {
     });
   };
 
-  // Filtrar templates por busca
+
   const filteredTemplates = c4Templates.filter((template) =>
     template.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
     template.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
     template.defaultData.technology?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Filtrar groups
+
   const filteredGroups = groupTemplates.filter((template) =>
     template.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
     template.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Agrupar por level
+
   const groupedByLevel = filteredTemplates.reduce((acc, template) => {
     if (!acc[template.level]) {
       acc[template.level] = [];
@@ -65,7 +65,7 @@ export function ArchitectureNodePalette() {
 
   return (
     <div className="w-80 h-screen bg-white border-r border-gray-200 flex flex-col">
-      {/* Header */}
+ 
       <div className="p-4 border-b border-gray-200">
         <h2 className="text-lg font-semibold text-gray-800 mb-1">
           Architecture Palette
@@ -74,7 +74,7 @@ export function ArchitectureNodePalette() {
           C4 Model Components
         </p>
         
-        {/* Search */}
+
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
@@ -87,9 +87,9 @@ export function ArchitectureNodePalette() {
         </div>
       </div>
 
-      {/* Content */}
+   
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
-        {/* Groups Section */}
+      
         {filteredGroups.length > 0 && (
           <div>
             <button
@@ -127,7 +127,7 @@ export function ArchitectureNodePalette() {
           </div>
         )}
 
-        {/* C4 Levels */}
+      
         {Object.values(C4Level).map((level) => {
           const templates = groupedByLevel[level] || [];
           const isExpanded = expandedLevels.has(level);
@@ -171,7 +171,7 @@ export function ArchitectureNodePalette() {
           );
         })}
 
-        {/* Empty State */}
+  
         {filteredTemplates.length === 0 && filteredGroups.length === 0 && (
           <div className="text-center py-8 text-gray-400">
             <Search className="w-8 h-8 mx-auto mb-2 opacity-50" />
@@ -180,7 +180,7 @@ export function ArchitectureNodePalette() {
         )}
       </div>
 
-      {/* Footer */}
+   
       <div className="p-4 border-t border-gray-200 bg-gray-50">
         <div className="text-xs text-gray-600">
           <div className="font-semibold mb-1">C4 Model Levels:</div>

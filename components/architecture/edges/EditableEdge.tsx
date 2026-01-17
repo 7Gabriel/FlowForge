@@ -65,7 +65,6 @@ export const EditableEdge = memo(({
     setShowStyleMenu(false);
   };
 
-  // Determinar strokeDasharray baseado no estilo
   const getStrokeDashArray = () => {
     switch (edgeStyle) {
       case 'solid':
@@ -86,7 +85,6 @@ export const EditableEdge = memo(({
 
   return (
     <>
-      {/* Edge Path */}
       <path
         id={id}
         style={{
@@ -99,8 +97,6 @@ export const EditableEdge = memo(({
         markerEnd={markerEnd}
         strokeDasharray={strokeDasharray}
       />
-
-      {/* Animated Overlay (só se animated) */}
       {isAnimated && (
         <path
           style={{
@@ -124,7 +120,6 @@ export const EditableEdge = memo(({
         </path>
       )}
 
-      {/* Label + Style Selector */}
       <EdgeLabelRenderer>
         <div
           style={{
@@ -135,7 +130,6 @@ export const EditableEdge = memo(({
           className="nodrag nopan"
         >
           <div className="flex items-center gap-1">
-            {/* Label */}
             {isEditing ? (
               <input
                 type="text"
@@ -156,7 +150,6 @@ export const EditableEdge = memo(({
               </div>
             )}
 
-            {/* Style Selector (só aparece quando selecionado) */}
             {selected && !isEditing && (
               <div className="relative">
                 <button
@@ -170,7 +163,6 @@ export const EditableEdge = memo(({
                   <ChevronDown className="w-3 h-3 text-gray-600" />
                 </button>
 
-                {/* Dropdown Menu */}
                 {showStyleMenu && (
                   <div className="absolute top-full mt-1 left-0 bg-white border border-gray-300 rounded shadow-lg z-50 min-w-[140px]">
                     <button

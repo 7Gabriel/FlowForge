@@ -3,7 +3,7 @@ import { NodeHandler, ExecutionContext, NodeExecutionResult, NodeExecutionStatus
 import { HTTPNodeData } from '../../types';
 import { interpolateVariables } from '../evaluator';
 
-export class HTTPHandler implements NodeHandler {  // ⚠️ Adicionar export
+export class HTTPHandler implements NodeHandler {
   async execute(node: Node<HTTPNodeData>, context: ExecutionContext): Promise<NodeExecutionResult> {
     const startTime = Date.now();
     const logs: string[] = [];

@@ -7,10 +7,10 @@ export function useSelectedNode() {
   const { setNodes } = useReactFlow();
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
 
-  // Listen to selection changes
+
   useOnSelectionChange({
     onChange: ({ nodes }) => {
-      // ⚠️ IMPORTANTE: Só pegar nodes que NÃO são architecture
+  
       if (nodes.length === 1 && nodes[0].type !== 'architecture') {
         setSelectedNode(nodes[0]);
       } else {
@@ -19,7 +19,7 @@ export function useSelectedNode() {
     },
   });
 
-  // Update node data
+
   const updateNodeData = useCallback(
     (updates: any) => {
       if (!selectedNode) return;

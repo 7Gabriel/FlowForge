@@ -19,7 +19,7 @@ import {
   }
   
   export const nodeTemplates: NodeTemplate[] = [
-    // INPUT NODES
+
     {
       type: NodeType.TRIGGER,
       label: 'Trigger',
@@ -34,7 +34,7 @@ import {
       },
     },
   
-    // PROCESSING NODES
+
     {
       type: NodeType.LLM,
       label: 'LLM',
@@ -67,7 +67,7 @@ import {
       },
     },
   
-    // LOGIC NODES
+
     {
       type: NodeType.CONDITION,
       label: 'Condition',
@@ -85,7 +85,7 @@ import {
       },
     },
   
-    // OUTPUT NODES
+ 
     {
       type: NodeType.OUTPUT,
       label: 'Output',

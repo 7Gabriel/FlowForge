@@ -4,9 +4,7 @@ import { GitBranch, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
 import { ConditionNodeData } from '@/lib/workflow/types';
 import { NodeExecutionStatus } from '@/lib/workflow/execution/types';
 
-// ========================================
-// Status Badge Component (duplicado do BaseNode)
-// ========================================
+
 function ExecutionStatusBadge({ status }: { status: NodeExecutionStatus }) {
   switch (status) {
     case NodeExecutionStatus.RUNNING:
@@ -46,17 +44,16 @@ export const ConditionNode = memo(({ data, selected }: NodeProps<ConditionNodeDa
         ${selected ? 'shadow-lg' : ''}
       `}
     >
-      {/* Execution Status Badge */}
+ 
       {executionStatus && <ExecutionStatusBadge status={executionStatus} />}
 
-      {/* Input Handle */}
       <Handle
         type="target"
         position={Position.Left}
         className="w-3 h-3 !bg-amber-500 border-2 border-white"
       />
 
-      {/* Header */}
+  
       <div className="flex items-center gap-2 mb-2">
         <div className="p-1.5 bg-amber-100 rounded">
           <GitBranch className="w-4 h-4 text-amber-600" />
@@ -66,7 +63,6 @@ export const ConditionNode = memo(({ data, selected }: NodeProps<ConditionNodeDa
         </div>
       </div>
 
-      {/* Body */}
       <div className="text-xs text-gray-500 space-y-1">
         <div className="font-mono bg-gray-50 p-1 rounded truncate">
           {data.condition}
@@ -76,7 +72,7 @@ export const ConditionNode = memo(({ data, selected }: NodeProps<ConditionNodeDa
         )}
       </div>
 
-      {/* Output Handles - TRUE (top) e FALSE (bottom) */}
+
       <Handle
         type="source"
         position={Position.Right}

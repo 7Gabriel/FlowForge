@@ -47,7 +47,7 @@ export function NodeExecutionCard({ result }: NodeExecutionCardProps) {
 
   return (
     <div className={`border-2 rounded-lg ${config.borderColor} ${config.bgColor} overflow-hidden`}>
-      {/* Header */}
+
       <button
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full px-4 py-3 flex items-center gap-3 hover:opacity-80 transition-opacity"
@@ -69,10 +69,10 @@ export function NodeExecutionCard({ result }: NodeExecutionCardProps) {
         )}
       </button>
 
-      {/* Expanded Content */}
+   
       {isExpanded && (
         <div className="px-4 pb-3 space-y-3 border-t border-gray-200">
-          {/* Output */}
+      
           {result.output && (
             <div>
               <div className="text-xs font-semibold text-gray-600 mb-1">Output:</div>
@@ -82,7 +82,7 @@ export function NodeExecutionCard({ result }: NodeExecutionCardProps) {
             </div>
           )}
 
-          {/* Logs */}
+     
           {result.logs && result.logs.length > 0 && (
             <div>
               <div className="text-xs font-semibold text-gray-600 mb-1 flex items-center gap-1">
@@ -97,7 +97,7 @@ export function NodeExecutionCard({ result }: NodeExecutionCardProps) {
             </div>
           )}
 
-          {/* Error */}
+       
           {result.error && (
             <div>
               <div className="text-xs font-semibold text-red-600 mb-1">Error:</div>

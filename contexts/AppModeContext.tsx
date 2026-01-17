@@ -11,7 +11,7 @@ interface AppModeContextType {
 const AppModeContext = createContext<AppModeContextType | undefined>(undefined);
 
 export function AppModeProvider({ children }: { children: ReactNode }) {
-  const [mode, setMode] = useState<AppMode>(AppMode.ARCHITECTURE); // ⚠️ Default Architecture
+  const [mode, setMode] = useState<AppMode>(AppMode.ARCHITECTURE);
 
   return (
     <AppModeContext.Provider value={{ mode, setMode }}>

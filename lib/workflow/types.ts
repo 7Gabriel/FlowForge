@@ -1,11 +1,7 @@
-// Tipos base do React Flow
+
 import { Node, Edge } from 'reactflow';
 import { NodeExecutionResult, NodeExecutionStatus } from './execution/types';
 
-
-// ========================================
-// Node Data Types
-// ========================================
 
 export enum NodeType {
   TRIGGER = 'trigger',
@@ -15,13 +11,12 @@ export enum NodeType {
   OUTPUT = 'output',
 }
 
-// Base para todos os nodes
 export interface BaseNodeData {
   label: string;
   description?: string;
 }
 
-// Trigger Node - Input do workflow
+
 export interface TriggerNodeData extends BaseNodeData {
   triggerType: 'manual' | 'webhook' | 'schedule';
   config?: {
@@ -30,7 +25,7 @@ export interface TriggerNodeData extends BaseNodeData {
   };
 }
 
-// LLM Node - Chamada para modelo de IA
+
 export interface LLMNodeData extends BaseNodeData {
   provider: 'openai' | 'anthropic' | 'azure';
   model: string;
@@ -39,7 +34,7 @@ export interface LLMNodeData extends BaseNodeData {
   maxTokens?: number;
 }
 
-// HTTP Node - Request HTTP
+
 export interface HTTPNodeData extends BaseNodeData {
   method: 'GET' | 'POST' | 'PUT' | 'DELETE';
   url: string;
@@ -47,22 +42,22 @@ export interface HTTPNodeData extends BaseNodeData {
   body?: string;
 }
 
-// Condition Node - Lógica condicional
+
 export interface ConditionNodeData extends BaseNodeData {
-  condition: string; // expressão JavaScript
+  condition: string;
   paths: {
-    true: string;  // label do caminho true
-    false: string; // label do caminho false
+    true: string;  
+    false: string;
   };
 }
 
-// Output Node - Saída do workflow
+
 export interface OutputNodeData extends BaseNodeData {
   outputType: 'json' | 'text' | 'webhook';
   destination?: string;
 }
 
-// Union type para todos os node data types
+
 export type WorkflowNodeData =
   | TriggerNodeData
   | LLMNodeData
@@ -70,9 +65,7 @@ export type WorkflowNodeData =
   | ConditionNodeData
   | OutputNodeData;
 
-// ========================================
-// Workflow Types
-// ========================================
+
 
 export interface WorkflowNode extends Node {
   type: NodeType;
@@ -94,9 +87,6 @@ export interface Workflow {
   updatedAt: Date;
 }
 
-// ========================================
-// Execution Types (para quando formos executar)
-// ========================================
 
 export interface ExecutionContext {
   workflowId: string;
@@ -129,9 +119,7 @@ export function useWorkflowExecution() {
   const [executionResult, setExecutionResult] = useState<WorkflowExecutionResult | null>(null);
   const [isExecuting, setIsExecuting] = useState(false);
 
-  // ========================================
-  // Executar Workflow
-  // ========================================
+ 
   const executeWorkflow = useCallback(
     async (config?: Partial<ExecutionConfig>) => {
       setIsExecuting(true);
@@ -143,7 +131,7 @@ export function useWorkflowExecution() {
 
         console.log('🚀 Starting workflow execution with', nodes.length, 'nodes');
 
-        // Resetar estado visual dos nodes
+   
         setNodes((nodes) =>
           nodes.map((node) => ({
             ...node,
@@ -154,17 +142,17 @@ export function useWorkflowExecution() {
           }))
         );
 
-        // Criar executor
+
         const executor = new WorkflowExecutor(nodes, edges, {
-          mode: 'test', // Modo teste (simulado)
+          mode: 'test', 
           ...config,
         });
 
-        // Executar
+  
         const result = await executor.execute();
         setExecutionResult(result);
 
-        // Atualizar visual dos nodes com resultados
+
         updateNodesWithResults(result);
 
         return result;
@@ -178,9 +166,6 @@ export function useWorkflowExecution() {
     [getNodes, getEdges, setNodes]
   );
 
-  // ========================================
-  // Atualizar visual dos nodes
-  // ========================================
   const updateNodesWithResults = useCallback(
     (result: WorkflowExecutionResult) => {
       setNodes((nodes) =>
@@ -204,9 +189,7 @@ export function useWorkflowExecution() {
     [setNodes]
   );
 
-  // ========================================
-  // Limpar resultados
-  // ========================================
+ 
   const clearResults = useCallback(() => {
     setExecutionResult(null);
     setNodes((nodes) =>
@@ -235,7 +218,6 @@ export interface BaseNodeDataWithExecution extends BaseNodeData {
   executionResult?: NodeExecutionResult;
 }
 
-// Re-exportar types com execução
 export interface TriggerNodeDataWithExecution extends TriggerNodeData, BaseNodeDataWithExecution {}
 export interface LLMNodeDataWithExecution extends LLMNodeData, BaseNodeDataWithExecution {}
 export interface HTTPNodeDataWithExecution extends HTTPNodeData, BaseNodeDataWithExecution {}

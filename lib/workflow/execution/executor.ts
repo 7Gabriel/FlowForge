@@ -15,9 +15,6 @@ import { ConditionHandler } from './handlers/condition';
 import { OutputHandler } from './handlers/output';
 import { extractVariables } from './evaluator';
 
-// ========================================
-// Registry de Handlers (usando string literals)
-// ========================================
 
 const handlerRegistry: Record<string, NodeHandler> = {
   'trigger': new TriggerHandler(),
@@ -27,9 +24,6 @@ const handlerRegistry: Record<string, NodeHandler> = {
   'output': new OutputHandler(),
 };
 
-// ========================================
-// Workflow Executor
-// ========================================
 
 export class WorkflowExecutor {
   private nodes: Node[];
@@ -160,7 +154,7 @@ export class WorkflowExecutor {
   }
 
   private findStartNode(): Node | undefined {
-    return this.nodes.find((node) => node.type === 'trigger'); // ⚠️ String literal
+    return this.nodes.find((node) => node.type === 'trigger');
   }
 
   private calculateStats() {
@@ -175,7 +169,7 @@ export class WorkflowExecutor {
 
   private getFinalOutput(): any {
     const outputResults = Array.from(this.context.nodeResults.values())
-      .filter((r) => r.nodeType === 'output') // ⚠️ String literal
+      .filter((r) => r.nodeType === 'output')
       .sort((a, b) => (b.endTime || 0) - (a.endTime || 0));
 
     return outputResults[0]?.output;

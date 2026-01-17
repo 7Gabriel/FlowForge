@@ -21,7 +21,7 @@ export const DatabaseNode = memo(({ data, selected }: NodeProps) => {
           minHeight: '200px',
         }}
       >
-        {/* Handles Bidirecionais */}
+  
         <Handle type="target" position={Position.Top} id="top-target" className="w-3 h-3 !bg-blue-500" style={{ top: -6 }} />
         <Handle type="source" position={Position.Top} id="top-source" className="w-3 h-3 !bg-green-500" style={{ top: -6, left: '55%' }} />
         
@@ -80,7 +80,7 @@ export const DatabaseNode = memo(({ data, selected }: NodeProps) => {
           />
         </svg>
 
-        {/* Content */}
+  
         <div className="relative z-10 flex flex-col items-center justify-center" style={{ marginTop: '40px' }}>
           <div className="mb-2">
             <DatabaseIcon className="w-12 h-12 text-blue-700" />

@@ -16,7 +16,7 @@ export function ArchitecturePropertiesEditor({ nodeId }: ArchitecturePropertiesE
   const [technology, setTechnology] = useState('');
   const [color, setColor] = useState('#2196F3');
 
-  // Carregar dados do node
+
   useEffect(() => {
     try {
       const nodes = reactFlow.getNodes();
@@ -33,7 +33,7 @@ export function ArchitecturePropertiesEditor({ nodeId }: ArchitecturePropertiesE
     }
   }, [nodeId, reactFlow]);
 
-  // Atualizar node
+
   const updateNode = (updates: any) => {
     try {
       reactFlow.setNodes((nodes) =>
@@ -55,7 +55,7 @@ export function ArchitecturePropertiesEditor({ nodeId }: ArchitecturePropertiesE
     }
   };
 
-  // Pegar dados do node atual
+
   let selectedNode = null;
   try {
     const nodes = reactFlow.getNodes();
@@ -72,7 +72,7 @@ export function ArchitecturePropertiesEditor({ nodeId }: ArchitecturePropertiesE
     );
   }
 
-  // Labels para níveis
+
   const levelLabels: Record<string, string> = {
     'context': 'Context',
     'container': 'Container',
@@ -85,7 +85,7 @@ export function ArchitecturePropertiesEditor({ nodeId }: ArchitecturePropertiesE
 
   return (
     <div className="p-4 space-y-4">
-      {/* Node Type Badge */}
+ 
       <div className="flex items-center justify-between">
         <div>
           <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">
@@ -105,10 +105,9 @@ export function ArchitecturePropertiesEditor({ nodeId }: ArchitecturePropertiesE
         </div>
       </div>
 
-      {/* Divider */}
+
       <div className="border-t border-gray-200" />
 
-      {/* Label */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Label
@@ -125,7 +124,7 @@ export function ArchitecturePropertiesEditor({ nodeId }: ArchitecturePropertiesE
         />
       </div>
 
-      {/* Description */}
+
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Description
@@ -142,7 +141,7 @@ export function ArchitecturePropertiesEditor({ nodeId }: ArchitecturePropertiesE
         />
       </div>
 
-      {/* Technology */}
+ 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Technology
@@ -159,7 +158,7 @@ export function ArchitecturePropertiesEditor({ nodeId }: ArchitecturePropertiesE
         />
       </div>
 
-      {/* Color Picker */}
+
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Color
@@ -190,7 +189,7 @@ export function ArchitecturePropertiesEditor({ nodeId }: ArchitecturePropertiesE
         </div>
       </div>
 
-      {/* Node Info */}
+
       <div className="pt-4 border-t border-gray-200">
         <div className="text-xs text-gray-500 space-y-1">
           <div className="flex justify-between">

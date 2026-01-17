@@ -24,7 +24,6 @@ export const AnimatedEdge = memo(({
 
   return (
     <>
-      {/* Edge Path (tracejado) */}
       <path
         id={id}
         style={{
@@ -34,11 +33,9 @@ export const AnimatedEdge = memo(({
         }}
         className="react-flow__edge-path"
         d={edgePath}
-        markerEnd={markerEnd} // ⚠️ Seta
+        markerEnd={markerEnd}
         strokeDasharray="5,5"
       />
-
-      {/* Animated Overlay (fluxo animado) */}
       <path
         style={{
           strokeWidth: 2,
@@ -49,7 +46,7 @@ export const AnimatedEdge = memo(({
         d={edgePath}
         strokeDasharray="5,5"
         strokeDashoffset="0"
-        markerEnd={markerEnd} // ⚠️ Seta na animação também
+        markerEnd={markerEnd}
       >
         <animate
           attributeName="stroke-dashoffset"

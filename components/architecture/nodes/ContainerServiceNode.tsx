@@ -26,7 +26,6 @@ export const ContainerServiceNode = memo(({ data, selected }: NodeProps) => {
         }}
       >
          
-        {/* TOP - Target e Source */}
         <Handle 
           type="target" 
           position={Position.Top} 
@@ -42,7 +41,6 @@ export const ContainerServiceNode = memo(({ data, selected }: NodeProps) => {
           style={{ top: -6, left: '55%' }}
         />
 
-        {/* RIGHT - Target e Source */}
         <Handle 
           type="target" 
           position={Position.Right} 
@@ -58,7 +56,6 @@ export const ContainerServiceNode = memo(({ data, selected }: NodeProps) => {
           style={{ right: -6, top: '55%' }}
         />
 
-        {/* BOTTOM - Target e Source */}
         <Handle 
           type="target" 
           position={Position.Bottom} 
@@ -74,7 +71,6 @@ export const ContainerServiceNode = memo(({ data, selected }: NodeProps) => {
           style={{ bottom: -6, left: '55%' }}
         />
 
-        {/* LEFT - Target e Source */}
         <Handle 
           type="target" 
           position={Position.Left} 
@@ -90,7 +86,6 @@ export const ContainerServiceNode = memo(({ data, selected }: NodeProps) => {
           style={{ left: -6, top: '55%' }}
         />
 
-        {/* Content */}
         <div className="flex-1 flex flex-col items-center justify-center p-4">
           <div className="mb-2">
             <IconComponent className="w-10 h-10 text-blue-700" />

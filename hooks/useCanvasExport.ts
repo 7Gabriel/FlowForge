@@ -10,9 +10,6 @@ const IMAGE_HEIGHT = 1536;
 export function useCanvasExport() {
   const { getNodes } = useReactFlow();
 
-  // ========================================
-  // Download helper
-  // ========================================
   const downloadImage = useCallback((dataUrl: string, fileName: string) => {
     const link = document.createElement('a');
     link.download = fileName;
@@ -20,9 +17,6 @@ export function useCanvasExport() {
     link.click();
   }, []);
 
-  // ========================================
-  // Export to PNG
-  // ========================================
   const exportToPng = useCallback(
     async (fileName: string = 'architecture-diagram.png') => {
       try {
@@ -33,7 +27,7 @@ export function useCanvasExport() {
           IMAGE_HEIGHT,
           0.5,
           2,
-          0.2 // padding
+          0.2 
         );
 
         const element = document.querySelector('.react-flow__viewport') as HTMLElement;
@@ -64,9 +58,6 @@ export function useCanvasExport() {
     [getNodes, downloadImage]
   );
 
-  // ========================================
-  // Export to SVG
-  // ========================================
   const exportToSvg = useCallback(
     async (fileName: string = 'architecture-diagram.svg') => {
       try {

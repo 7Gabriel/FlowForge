@@ -2,7 +2,7 @@ import { Node } from 'reactflow';
 import { NodeHandler, ExecutionContext, NodeExecutionResult, NodeExecutionStatus } from '../types';
 import { OutputNodeData } from '../../types';
 
-export class OutputHandler implements NodeHandler {  // ⚠️ Adicionar export
+export class OutputHandler implements NodeHandler {
   async execute(node: Node<OutputNodeData>, context: ExecutionContext): Promise<NodeExecutionResult> {
     const startTime = Date.now();
     const logs: string[] = [];

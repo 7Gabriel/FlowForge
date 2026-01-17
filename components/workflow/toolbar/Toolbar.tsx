@@ -14,15 +14,16 @@ import {
   Check,
   X,
   ArrowUp,
-  ArrowDown
+  ArrowDown,
+  Play
 } from 'lucide-react';
 import { useWorkflowExecution } from '@/contexts/WorkflowExecutionContext';
 import { toPng, toSvg } from 'html-to-image';
 
 export function Toolbar() {
   const { getNodes, getEdges, setNodes, setEdges } = useReactFlow();
-  const { clearResults } = useWorkflowExecution();
-  const [workflowTitle, setWorkflowTitle] = useState('Architecture Live');
+  const { executeWorkflow, clearResults } = useWorkflowExecution();
+  const [workflowTitle, setWorkflowTitle] = useState('FlowForge');
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [editedTitle, setEditedTitle] = useState(workflowTitle);
   const titleInputRef = useRef<HTMLInputElement>(null);
@@ -186,6 +187,20 @@ export function Toolbar() {
     console.log('✅ Sent to back:', selectedNodes.length, 'nodes');
   };
 
+  // ⚠️ NOVO: Simulate Architecture Flow
+  const handleSimulate = () => {
+    const nodes = getNodes();
+    const edges = getEdges();
+    
+    if (nodes.length === 0) {
+      alert('Add nodes to simulate!');
+      return;
+    }
+
+    console.log('🎬 Starting architecture simulation...');
+    executeWorkflow(nodes, edges);
+  };
+
   return (
     <div className="absolute top-0 left-0 right-0 h-14 bg-white border-b border-gray-200 flex items-center justify-between px-4 z-50 shadow-sm">
       {/* Left Section - Title */}
@@ -318,6 +333,15 @@ export function Toolbar() {
         >
           <Trash2 className="w-4 h-4" />
           Clear
+        </button>
+
+        {/* ⚠️ NOVO: Simulate Button */}
+        <button
+          onClick={handleSimulate}
+          className="flex items-center gap-2 px-4 py-2 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors font-medium"
+        >
+          <Play className="w-4 h-4" />
+          Simulate
         </button>
       </div>
 

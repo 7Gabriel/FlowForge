@@ -37,17 +37,13 @@ export function ArchitectureSimulationProvider({ children }: { children: ReactNo
   const [steps, setSteps] = useState<SimulationStep[]>([]);
   const [isPaused, setIsPaused] = useState(false);
 
-  // ========================================
-  // Encontrar node inicial (sem input edges)
-  // ========================================
+  
   const findStartNodes = useCallback((nodes: Node[], edges: Edge[]): Node[] => {
     const nodesWithInput = new Set(edges.map((e) => e.target));
     return nodes.filter((node) => !nodesWithInput.has(node.id));
   }, []);
 
-  // ========================================
-  // Ordenar nodes topologicamente (BFS)
-  // ========================================
+
   const topologicalSort = useCallback((nodes: Node[], edges: Edge[]): string[] => {
     const startNodes = findStartNodes(nodes, edges);
     const visited = new Set<string>();
@@ -62,7 +58,6 @@ export function ArchitectureSimulationProvider({ children }: { children: ReactNo
       visited.add(nodeId);
       order.push(nodeId);
 
-      // Adicionar próximos nodes
       const nextNodes = edges
         .filter((e) => e.source === nodeId)
         .map((e) => e.target);
@@ -73,9 +68,6 @@ export function ArchitectureSimulationProvider({ children }: { children: ReactNo
     return order;
   }, [findStartNodes]);
 
-  // ========================================
-  // Iniciar Simulação
-  // ========================================
   const startSimulation = useCallback(async () => {
     const nodes = getNodes();
     const edges = getEdges();
@@ -85,7 +77,6 @@ export function ArchitectureSimulationProvider({ children }: { children: ReactNo
       return;
     }
 
-    // Resetar estado visual
     setNodes((nodes) =>
       nodes.map((node) => ({
         ...node,
@@ -96,7 +87,6 @@ export function ArchitectureSimulationProvider({ children }: { children: ReactNo
       }))
     );
 
-    // Ordenar nodes
     const executionOrder = topologicalSort(nodes, edges);
     
     const simulationSteps: SimulationStep[] = executionOrder.map((nodeId) => ({
@@ -112,9 +102,8 @@ export function ArchitectureSimulationProvider({ children }: { children: ReactNo
 
     console.log('🎬 Simulation started. Execution order:', executionOrder);
 
-    // Executar cada step
     for (let i = 0; i < executionOrder.length; i++) {
-      // Verificar se pausou
+
       while (isPaused) {
         await new Promise((resolve) => setTimeout(resolve, 100));
       }
@@ -122,7 +111,6 @@ export function ArchitectureSimulationProvider({ children }: { children: ReactNo
       const nodeId = executionOrder[i];
       setCurrentStep(i);
 
-      // Marcar como executando
       setNodes((nodes) =>
         nodes.map((node) => ({
           ...node,
@@ -135,10 +123,8 @@ export function ArchitectureSimulationProvider({ children }: { children: ReactNo
 
       console.log(`▶️  Executing node ${i + 1}/${executionOrder.length}: ${nodeId}`);
 
-      // Delay entre steps (1.5 segundos)
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      // Marcar como completado
       setNodes((nodes) =>
         nodes.map((node) => ({
           ...node,
@@ -170,7 +156,6 @@ export function ArchitectureSimulationProvider({ children }: { children: ReactNo
     setSteps([]);
     setIsPaused(false);
 
-    // Limpar estado visual
     setNodes((nodes) =>
       nodes.map((node) => ({
         ...node,

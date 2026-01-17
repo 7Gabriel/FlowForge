@@ -27,7 +27,6 @@ export const ContainerWebNode = memo(({ data, selected }: NodeProps) => {
         }}
       >   
 
-        {/* Browser Bar */}
         <div
           className="flex items-center gap-1.5 px-3 py-2"
           style={{
@@ -40,7 +39,6 @@ export const ContainerWebNode = memo(({ data, selected }: NodeProps) => {
           <div className="w-2.5 h-2.5 rounded-full bg-white opacity-80" />
         </div>
 
-        {/* TOP - Target e Source */}
         <Handle 
           type="target" 
           position={Position.Top} 
@@ -56,7 +54,7 @@ export const ContainerWebNode = memo(({ data, selected }: NodeProps) => {
           style={{ top: -6, left: '55%' }}
         />
 
-        {/* RIGHT - Target e Source */}
+  
         <Handle 
           type="target" 
           position={Position.Right} 
@@ -72,7 +70,7 @@ export const ContainerWebNode = memo(({ data, selected }: NodeProps) => {
           style={{ right: -6, top: '55%' }}
         />
 
-        {/* BOTTOM - Target e Source */}
+
         <Handle 
           type="target" 
           position={Position.Bottom} 
@@ -88,7 +86,7 @@ export const ContainerWebNode = memo(({ data, selected }: NodeProps) => {
           style={{ bottom: -6, left: '55%' }}
         />
 
-        {/* LEFT - Target e Source */}
+  
         <Handle 
           type="target" 
           position={Position.Left} 
@@ -104,7 +102,6 @@ export const ContainerWebNode = memo(({ data, selected }: NodeProps) => {
           style={{ left: -6, top: '55%' }}
         />
 
-        {/* Content */}
         <div className="flex-1 flex flex-col items-center justify-center p-4">
           <div className="mb-2">
             <IconComponent className="w-10 h-10 text-blue-700" />

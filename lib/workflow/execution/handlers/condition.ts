@@ -3,7 +3,7 @@ import { NodeHandler, ExecutionContext, NodeExecutionResult, NodeExecutionStatus
 import { ConditionNodeData } from '../../types';
 import { evaluateCondition } from '../evaluator';
 
-export class ConditionHandler implements NodeHandler {  // ⚠️ Adicionar export
+export class ConditionHandler implements NodeHandler {
   async execute(node: Node<ConditionNodeData>, context: ExecutionContext): Promise<NodeExecutionResult> {
     const startTime = Date.now();
     const logs: string[] = [];

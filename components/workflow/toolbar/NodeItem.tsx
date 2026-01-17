@@ -17,7 +17,7 @@ export function NodeItem({ template }: NodeItemProps) {
   };
 
   const onDragStart = (event: React.DragEvent) => {
-    // Passamos o tipo do node via dataTransfer
+
     event.dataTransfer.setData('application/reactflow', template.type);
     event.dataTransfer.effectAllowed = 'move';
   };

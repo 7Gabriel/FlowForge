@@ -73,7 +73,7 @@ export function PropertiesPanel() {
 
   return (
     <div className="w-96 h-screen bg-white border-l border-gray-200 flex flex-col">
-      {/* Header */}
+    
       <div className="p-4 border-b border-gray-200 flex items-center justify-between">
         <div>
           <h2 className="text-lg font-semibold text-gray-800">Properties</h2>
@@ -91,12 +91,12 @@ export function PropertiesPanel() {
         </button>
       </div>
 
-      {/* Content */}
+     
       <div className="flex-1 overflow-y-auto p-4">
         {renderEditor()}
       </div>
 
-      {/* Footer */}
+  
       <div className="p-4 border-t border-gray-200 text-xs text-gray-500">
         Node ID: <span className="font-mono">{selectedNode.id}</span>
       </div>

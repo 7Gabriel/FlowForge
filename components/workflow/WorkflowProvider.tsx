@@ -15,7 +15,7 @@ export function WorkflowProvider({ children }: WorkflowProviderProps) {
     <ReactFlowProvider>
       <AppModeProvider>
         <WorkflowExecutionProvider>
-          <ArchitectureSimulationProvider> {/* ⚠️ Novo */}
+          <ArchitectureSimulationProvider>
             {children}
           </ArchitectureSimulationProvider>
         </WorkflowExecutionProvider>
