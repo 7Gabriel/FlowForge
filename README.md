@@ -4,7 +4,7 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 <div align="center">
-   <img src="public/flowforge-logo.jpg" alt="FlowForge Logo" width="200"/>
+   <img src="public/flowforge-logo.png" alt="FlowForge Logo" width="200"/>
   
 # 🎨 FlowForge
 
