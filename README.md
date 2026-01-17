@@ -1,3 +1,8 @@
+[![CI](https://github.com/SEU-USERNAME/flowforge/workflows/CI/badge.svg)](https://github.com/7Gabriel/flowforge/actions)
+[![Deploy](https://img.shields.io/badge/deploy-vercel-black)](https://flowforge-q8oyuuc68-7gabriels-projects.vercel.app/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+
 <div align="center">
   
 # 🎨 FlowForge
