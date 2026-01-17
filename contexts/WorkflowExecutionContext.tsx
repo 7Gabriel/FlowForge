@@ -1,8 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import { Node, Edge, useReactFlow } from 'reactflow';
-import { WorkflowExecutor } from '@/lib/workflow/execution/executor';
+import { Node, Edge } from 'reactflow';
 import { ArchitectureExecutor } from '@/lib/workflow/execution/architecture-executor';
 
 interface WorkflowExecutionContextType {
@@ -23,47 +22,31 @@ export function WorkflowExecutionProvider({ children }: { children: React.ReactN
     setExecutionResult(null);
 
     try {
-      const isArchitecture = nodes.some(n => 
-        n.type === 'person' || 
-        n.type === 'external-system' || 
-        n.type === 'container-web' || 
-        n.type === 'container-service' ||
-        n.type === 'database' ||
-        n.type === 'component' ||
-        n.type === 'architecture' ||
-        n.type === 'group'
+      console.log('🎬 Execute Workflow called with nodes:', nodes.length);
+
+      const executor = new ArchitectureExecutor();
+      const result = await executor.execute(
+        nodes, 
+        edges, 
+        (step) => {
+          console.log('📍 Step update:', step);
+        },
+        (nodeId, status) => {
+          console.log('🎨 Highlight node:', nodeId, status);
+          window.dispatchEvent(new CustomEvent('architecture:highlight-node', { 
+            detail: { nodeId, status } 
+          }));
+        },
+        (edgeId, highlight) => {
+          console.log('🎨 Highlight edge:', edgeId, highlight);
+          window.dispatchEvent(new CustomEvent('architecture:highlight-edge', { 
+            detail: { edgeId, highlight } 
+          }));
+        }
       );
 
-      if (isArchitecture) {
-        const executor = new ArchitectureExecutor();
-        const result = await executor.execute(
-          nodes, 
-          edges, 
-          (step) => {
-            console.log('📍 Step update:', step);
-          },
-          (nodeId, status) => {
-         
-            console.log('🎨 Highlight node:', nodeId, status);
-            window.dispatchEvent(new CustomEvent('architecture:highlight-node', { 
-              detail: { nodeId, status } 
-            }));
-          },
-          (edgeId, highlight) => {
-        
-            console.log('🎨 Highlight edge:', edgeId, highlight);
-            window.dispatchEvent(new CustomEvent('architecture:highlight-edge', { 
-              detail: { edgeId, highlight } 
-            }));
-          }
-        );
-
-        setExecutionResult(result);
-      } else {
-        const executor = new WorkflowExecutor();
-        const result = await executor.execute(nodes, edges);
-        setExecutionResult(result);
-      }
+      setExecutionResult(result);
+      console.log('✅ Architecture execution completed:', result);
     } catch (error) {
       console.error('❌ Execution error:', error);
       setExecutionResult({

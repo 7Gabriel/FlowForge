@@ -8,7 +8,7 @@ interface ArchitectureNodeItemProps {
 }
 
 export function ArchitectureNodeItem({ template }: ArchitectureNodeItemProps) {
-  const Icon = getIconByName(template.iconName) || Box; // ⚠️ Usar iconName
+  const Icon = getIconByName(template.iconName) || Box;
 
   const onDragStart = (event: React.DragEvent) => {
     event.dataTransfer.setData('application/reactflow', template.category);

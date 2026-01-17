@@ -177,9 +177,12 @@ export function Toolbar() {
       showAlert('No Selection', 'Please select a node first.', 'info');
       return;
     }
-
-    const maxZIndex = Math.max(...nodes.map(n => n.style?.zIndex || 0));
-
+  
+    const maxZIndex = Math.max(...nodes.map(n => {
+      const z = n.style?.zIndex;
+      return typeof z === 'number' ? z : (typeof z === 'string' ? parseInt(z, 10) : 0);
+    }), 0); 
+  
     setNodes((nodes) =>
       nodes.map((node) => {
         if (node.selected) {
@@ -195,7 +198,7 @@ export function Toolbar() {
       })
     );
   };
-
+  
   const handleSendToBack = () => {
     const nodes = getNodes();
     const selectedNodes = nodes.filter(n => n.selected);
@@ -204,9 +207,12 @@ export function Toolbar() {
       showAlert('No Selection', 'Please select a node first.', 'info');
       return;
     }
-
-    const minZIndex = Math.min(...nodes.map(n => n.style?.zIndex || 0));
-
+  
+    const minZIndex = Math.min(...nodes.map(n => {
+      const z = n.style?.zIndex;
+      return typeof z === 'number' ? z : (typeof z === 'string' ? parseInt(z, 10) : 0);
+    }), 0); 
+  
     setNodes((nodes) =>
       nodes.map((node) => {
         if (node.selected) {

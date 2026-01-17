@@ -21,30 +21,27 @@ export function ArchitectureNodeEditor({ node, onUpdate }: ArchitectureNodeEdito
 
   return (
     <div className="p-4 space-y-4">
- 
       <FormField
         label="Label"
         description="Display name of the component"
       >
         <Input
           value={formData.label || ''}
-          onChange={(e) => updateField('label', e.target.value)}
+          onChange={(e) => updateField('label' as keyof ArchitectureNodeData, e.target.value)}
           placeholder="Enter label"
         />
       </FormField>
 
-   
       <FormField
         label="Technology"
         description="Tech stack or platform"
       >
         <Input
           value={formData.technology || ''}
-          onChange={(e) => updateField('technology', e.target.value)}
+          onChange={(e) => updateField('technology' as keyof ArchitectureNodeData, e.target.value)}
           placeholder="e.g., PostgreSQL, Node.js, AWS Lambda"
         />
       </FormField>
-
 
       <FormField
         label="Description"
@@ -52,23 +49,23 @@ export function ArchitectureNodeEditor({ node, onUpdate }: ArchitectureNodeEdito
       >
         <Textarea
           value={formData.description || ''}
-          onChange={(e) => updateField('description', e.target.value)}
+          onChange={(e) => updateField('description' as keyof ArchitectureNodeData, e.target.value)}
           placeholder="Enter description"
           rows={3}
         />
       </FormField>
 
-    
-      {renderMetadataFields(node.data.category, formData, updateField)}
+      {renderMetadataFields(node.data.category, formData, (field, value) => {
+        updateField(field as keyof ArchitectureNodeData, value);
+      })}
     </div>
   );
 }
 
-
 function renderMetadataFields(
-  category: string,
-  formData: any,
-  updateField: (field: string, value: any) => void
+  category: string, 
+  formData: any, 
+  updateField: (field: string, value: any) => void 
 ) {
   const metadata = formData.metadata || {};
 
