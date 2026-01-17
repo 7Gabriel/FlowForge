@@ -1,10 +1,10 @@
 import React from 'react';
-import { C4NodeTemplate } from '@/lib/architecture/c4-templates';
+import { C4Template } from '@/lib/architecture/c4-templates';
 import { getIconByName } from '@/lib/architecture/icon-registry';
 import { Box } from 'lucide-react';
 
 interface ArchitectureNodeItemProps {
-  template: C4NodeTemplate;
+  template: C4Template;
 }
 
 export function ArchitectureNodeItem({ template }: ArchitectureNodeItemProps) {
