@@ -3,12 +3,14 @@ import { microservicesEcommerceTemplate } from './templates/microservices-ecomme
 import { eventDrivenKafkaTemplate } from './templates/event-driven-kafka';
 import { serverlessAwsTemplate } from './templates/serverless-aws';
 import { monolithToMicroservicesTemplate } from './templates/monolith-to-microservices';
+import { cqrsPatternTemplate } from './templates/cqrs-pattern';
 
 export const templateRegistry: ArchitectureTemplate[] = [
   microservicesEcommerceTemplate,
   eventDrivenKafkaTemplate,
   serverlessAwsTemplate,
   monolithToMicroservicesTemplate,
+  cqrsPatternTemplate,
 ];
 
 export function getTemplateById(id: string): ArchitectureTemplate | undefined {
