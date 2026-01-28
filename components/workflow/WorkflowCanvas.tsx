@@ -41,20 +41,21 @@ import { getGroupTemplate } from '@/lib/architecture/group-templates';
 import { C4NodeCategory, GroupStyle, C4VisualStyle } from '@/lib/architecture/c4-types';
 import { useAppMode } from '@/contexts/AppModeContext';
 import { AppMode } from '@/lib/types';
+import { useClipboard } from '@/contexts/ClipboardContext'; // ⚠️ NOVO IMPORT
 
 const nodeTypes: NodeTypes = {
- 
+  // Workflow nodes
   [NodeType.TRIGGER]: TriggerNode,
   [NodeType.LLM]: LLMNode,
   [NodeType.HTTP]: HTTPNode,
   [NodeType.CONDITION]: ConditionNode,
   [NodeType.OUTPUT]: OutputNode,
   
-
+  // Architecture nodes
   'architecture': C4Node,
   'group': GroupNode,
   
-
+  // C4 Model visual styles
   'person': PersonNode,
   'external-system': ExternalSystemNode,
   'container-web': ContainerWebNode,
@@ -91,20 +92,7 @@ export function WorkflowCanvas() {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
   const { mode } = useAppMode();
-
-  const defaultEdgeOptions = {
-    type: 'smoothstep',
-    markerEnd: {
-      type: MarkerType.ArrowClosed,
-      width: 20,
-      height: 20,
-      color: '#94A3B8',
-    },
-    style: {
-      strokeWidth: 3,
-      stroke: '#94A3B8',
-    },
-  };
+  const { copyNodes, cutNodes, pasteNodes, hasCopiedNodes } = useClipboard(); // ⚠️ NOVO HOOK
 
   useEffect(() => {
     const handleNodeHighlight = (event: any) => {
@@ -241,7 +229,6 @@ export function WorkflowCanvas() {
   
       const nodeType = event.dataTransfer.getData('application/reactflow');
       const dragType = event.dataTransfer.getData('nodeType');
-
   
       if (!nodeType) {
         console.error('❌ No nodeType found');
@@ -253,7 +240,6 @@ export function WorkflowCanvas() {
         y: event.clientY,
       });
   
-  
       let newNode: Node;
   
       if (dragType === 'group') {
@@ -262,7 +248,6 @@ export function WorkflowCanvas() {
           console.error('❌ Group template not found:', nodeType);
           return;
         }
-
   
         newNode = {
           id: `group-${Date.now()}`,
@@ -289,7 +274,6 @@ export function WorkflowCanvas() {
           console.error('❌ Architecture template not found:', nodeType);
           return;
         }
-
   
         const visualStyle = template.defaultData.visualStyle;
         let nodeTypeStr = 'architecture';
@@ -381,27 +365,95 @@ export function WorkflowCanvas() {
     console.log('🗑️ Edges deleted:', deleted);
   }, []);
 
+  // ⚠️ ATUALIZADO: handleKeyDown com Copy/Cut/Paste
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
-      if (event.key === 'Delete' || event.key === 'Backspace') {
-        const selectedNodes = nodes.filter((node) => node.selected);
-        const selectedEdges = edges.filter((edge) => edge.selected);
+      const isCtrlOrCmd = event.ctrlKey || event.metaKey;
+      
+      // Ignore if user is typing in an input/textarea
+      const target = event.target as HTMLElement;
+      if (
+        target.tagName === 'INPUT' ||
+        target.tagName === 'TEXTAREA' ||
+        target.isContentEditable
+      ) {
+        return;
+      }
 
-        if (selectedNodes.length > 0 || selectedEdges.length > 0) {
-          if (selectedNodes.length > 0) {
-            setNodes((nds) => nds.filter((node) => !node.selected));
-          }
-          
-          if (selectedEdges.length > 0) {
-            setEdges((eds) => eds.filter((edge) => !edge.selected));
-          }
+      const selectedNodes = nodes.filter((node) => node.selected);
+      const selectedEdges = edges.filter((edge) => edge.selected);
+
+      // DELETE / BACKSPACE
+      if (event.key === 'Delete' || event.key === 'Backspace') {
+        event.preventDefault();
+        
+        if (selectedNodes.length > 0) {
+          console.log('🗑️ Deleting', selectedNodes.length, 'nodes');
+          setNodes((nds) => nds.filter((node) => !node.selected));
+        }
+        
+        if (selectedEdges.length > 0) {
+          console.log('🗑️ Deleting', selectedEdges.length, 'edges');
+          setEdges((eds) => eds.filter((edge) => !edge.selected));
+        }
+      }
+
+      // CTRL+C - Copy
+      if (isCtrlOrCmd && event.key === 'c' && selectedNodes.length > 0) {
+        event.preventDefault();
+        console.log('📋 Copy shortcut triggered');
+        copyNodes(selectedNodes);
+      }
+
+      // CTRL+X - Cut
+      if (isCtrlOrCmd && event.key === 'x' && selectedNodes.length > 0) {
+        event.preventDefault();
+        console.log('✂️ Cut shortcut triggered');
+        cutNodes(selectedNodes, () => {
+          setNodes((nds) => nds.filter((node) => !node.selected));
+        });
+      }
+
+      // CTRL+V - Paste
+      if (isCtrlOrCmd && event.key === 'v' && hasCopiedNodes) {
+        event.preventDefault();
+        console.log('📄 Paste shortcut triggered');
+        
+        const newNodes = pasteNodes();
+        if (newNodes.length > 0) {
+          setNodes((nds) => [
+            ...nds.map((n) => ({ ...n, selected: false })),
+            ...newNodes.map((n) => ({ ...n, selected: true })),
+          ]);
+        }
+      }
+
+      // CTRL+A - Select All
+      if (isCtrlOrCmd && event.key === 'a') {
+        event.preventDefault();
+        console.log('🔘 Select All triggered');
+        setNodes((nds) => nds.map((node) => ({ ...node, selected: true })));
+        setEdges((eds) => eds.map((edge) => ({ ...edge, selected: true })));
+      }
+
+      // CTRL+D - Duplicate
+      if (isCtrlOrCmd && event.key === 'd' && selectedNodes.length > 0) {
+        event.preventDefault();
+        console.log('📑 Duplicate shortcut triggered');
+        
+        copyNodes(selectedNodes);
+        const newNodes = pasteNodes({ x: 50, y: 50 });
+        
+        if (newNodes.length > 0) {
+          setNodes((nds) => [
+            ...nds.map((n) => ({ ...n, selected: false })),
+            ...newNodes.map((n) => ({ ...n, selected: true })),
+          ]);
         }
       }
     },
-    [nodes, edges, setNodes, setEdges]
+    [nodes, edges, setNodes, setEdges, copyNodes, cutNodes, pasteNodes, hasCopiedNodes]
   );
-
-  
 
   return (
     <div 
