@@ -1,8 +1,10 @@
 import { ArchitectureTemplate, TemplateCategory } from './template-types';
 import { microservicesEcommerceTemplate } from './templates/microservices-ecommerce';
+import { eventDrivenKafkaTemplate } from './templates/event-driven-kafka';
 
 export const templateRegistry: ArchitectureTemplate[] = [
   microservicesEcommerceTemplate,
+  eventDrivenKafkaTemplate,
 ];
 
 export function getTemplateById(id: string): ArchitectureTemplate | undefined {
