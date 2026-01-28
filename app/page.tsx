@@ -8,6 +8,7 @@ import { ArchitecturePropertiesPanel } from '@/components/architecture/propertie
 import { ExecutionPanel } from '@/components/workflow/execution/ExecutionPanel';
 import { Toolbar } from '@/components/workflow/toolbar/Toolbar';
 import { useWorkflowExecution } from '@/contexts/WorkflowExecutionContext';
+import { ClipboardProvider } from '@/contexts/ClipboardContext';
 
 function AppContent() {
   const { executionResult, isExecuting } = useWorkflowExecution();
@@ -15,20 +16,25 @@ function AppContent() {
 
   return (
     <ReactFlowProvider>
-      <main className="flex w-full h-screen">
-        <Toolbar />
-        
-        <div className="flex flex-1 pt-[57px]">
-          <ArchitectureNodePalette />
-          <div className="flex-1">
-            <WorkflowCanvas />
+      <ClipboardProvider>
+        <main className="flex w-full h-screen">
+          <Toolbar />
+          
+          <div className="flex flex-1 pt-[57px]">
+            <ArchitectureNodePalette />
+            
+            <div className="flex-1">
+              <WorkflowCanvas />
+            </div>
+            
+            <ArchitecturePropertiesPanel />
+            
+            {hasExecutionResult && (
+              <ExecutionPanel result={executionResult} isExecuting={isExecuting} />
+            )}
           </div>
-          <ArchitecturePropertiesPanel />
-          {hasExecutionResult && (
-            <ExecutionPanel result={executionResult} isExecuting={isExecuting} />
-          )}
-        </div>
-      </main>
+        </main>
+      </ClipboardProvider>
     </ReactFlowProvider>
   );
 }
