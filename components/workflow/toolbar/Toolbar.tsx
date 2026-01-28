@@ -1,6 +1,9 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import { Sparkles } from 'lucide-react';
+import { TemplatesModal } from '@/components/templates/TemplatesModal';
+import { getTemplateById } from '@/lib/templates/template-registry';
+import React, { useState, useRef, useCallback } from 'react';
 import { useReactFlow } from 'reactflow';
 import { 
   Save, 
@@ -23,6 +26,7 @@ import { AlertModal } from '@/components/ui/alert-modal';
 import { toPng } from 'html-to-image';
 
 export function Toolbar() {
+  const [isTemplatesModalOpen, setIsTemplatesModalOpen] = useState(false);
   const { getNodes, getEdges, setNodes, setEdges } = useReactFlow();
   const { executeWorkflow, clearResults } = useWorkflowExecution();
   const [workflowTitle, setWorkflowTitle] = useState('FlowForge');
@@ -242,6 +246,25 @@ export function Toolbar() {
     executeWorkflow(nodes, edges);
   };
 
+  const handleLoadTemplate = useCallback((templateId: string) => {
+    const template = getTemplateById(templateId);
+    if (!template) {
+      showAlert('Template Not Found', 'The selected template could not be loaded.', 'error');
+      return;
+    }
+  
+    // Clear current diagram
+    setNodes([]);
+    setEdges([]);
+  
+    // Load template nodes and edges
+    setTimeout(() => {
+      setNodes(template.nodes);
+      setEdges(template.edges);
+      showAlert('Template Loaded', `"${template.name}" has been loaded successfully!`, 'success');
+    }, 100);
+  }, [setNodes, setEdges]);
+
   return (
     <>
       <div className="absolute top-0 left-0 right-0 h-14 bg-white border-b border-gray-200 flex items-center justify-between px-4 z-50 shadow-sm">
@@ -375,6 +398,13 @@ export function Toolbar() {
             <Trash2 className="w-4 h-4" />
             Clear
           </button>
+          <button
+            onClick={() => setIsTemplatesModalOpen(true)}
+            className="flex items-center gap-2 px-4 py-2 text-sm text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg transition-colors font-medium shadow-sm"
+          >
+            <Sparkles className="w-4 h-4" />
+            Templates
+          </button>
 
           <button
             onClick={handleSimulate}
@@ -393,6 +423,13 @@ export function Toolbar() {
           className="hidden"
         />
       </div>
+
+      {/* Templates Modal */}
+      <TemplatesModal
+        isOpen={isTemplatesModalOpen}
+        onClose={() => setIsTemplatesModalOpen(false)}
+        onSelectTemplate={handleLoadTemplate}
+      />
 
       {/* Modals */}
       <ConfirmModal
