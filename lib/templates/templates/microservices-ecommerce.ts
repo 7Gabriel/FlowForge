@@ -1,4 +1,5 @@
 import { ArchitectureTemplate, TemplateCategory } from '../template-types';
+import { MarkerType } from 'reactflow';
 
 export const microservicesEcommerceTemplate: ArchitectureTemplate = {
   id: 'microservices-ecommerce',
@@ -147,7 +148,7 @@ export const microservicesEcommerceTemplate: ArchitectureTemplate = {
       animated: false,
       data: { label: 'HTTPS', edgeStyle: 'solid' },
       style: { stroke: '#3B82F6', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#3B82F6' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#3B82F6' },
     },
     
     // API Gateway → Services
@@ -158,7 +159,7 @@ export const microservicesEcommerceTemplate: ArchitectureTemplate = {
       type: 'editable',
       data: { label: 'REST API', edgeStyle: 'solid' },
       style: { stroke: '#3B82F6', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#3B82F6' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#3B82F6' },
     },
     {
       id: 'e-api-order',
@@ -167,7 +168,7 @@ export const microservicesEcommerceTemplate: ArchitectureTemplate = {
       type: 'editable',
       data: { label: 'REST API', edgeStyle: 'solid' },
       style: { stroke: '#3B82F6', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#3B82F6' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#3B82F6' },
     },
     {
       id: 'e-api-payment',
@@ -176,7 +177,7 @@ export const microservicesEcommerceTemplate: ArchitectureTemplate = {
       type: 'editable',
       data: { label: 'REST API', edgeStyle: 'solid' },
       style: { stroke: '#3B82F6', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#3B82F6' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#3B82F6' },
     },
     
     // Services → Databases
@@ -187,7 +188,7 @@ export const microservicesEcommerceTemplate: ArchitectureTemplate = {
       type: 'editable',
       data: { label: 'SQL Queries', edgeStyle: 'solid' },
       style: { stroke: '#3B82F6', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#3B82F6' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#3B82F6' },
     },
     {
       id: 'e-order-db',
@@ -196,7 +197,7 @@ export const microservicesEcommerceTemplate: ArchitectureTemplate = {
       type: 'editable',
       data: { label: 'NoSQL', edgeStyle: 'solid' },
       style: { stroke: '#3B82F6', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#3B82F6' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#3B82F6' },
     },
     
     // Services → Event Bus (Async)
@@ -208,7 +209,7 @@ export const microservicesEcommerceTemplate: ArchitectureTemplate = {
       animated: true,
       data: { label: 'OrderCreated', edgeStyle: 'dashed' },
       style: { stroke: '#FF5722', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#FF5722' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#FF5722' },
     },
     {
       id: 'e-payment-kafka',
@@ -218,7 +219,7 @@ export const microservicesEcommerceTemplate: ArchitectureTemplate = {
       animated: true,
       data: { label: 'PaymentProcessed', edgeStyle: 'dashed' },
       style: { stroke: '#FF5722', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#FF5722' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#FF5722' },
     },
     
     // Payment Service → Stripe
@@ -229,7 +230,7 @@ export const microservicesEcommerceTemplate: ArchitectureTemplate = {
       type: 'editable',
       data: { label: 'Payment API', edgeStyle: 'solid' },
       style: { stroke: '#FF5722', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#FF5722' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#FF5722' },
     },
   ],
 };

@@ -1,4 +1,5 @@
 import { ArchitectureTemplate, TemplateCategory } from '../template-types';
+import { MarkerType } from 'reactflow';
 
 export const serverlessAwsTemplate: ArchitectureTemplate = {
   id: 'serverless-aws',
@@ -189,7 +190,7 @@ export const serverlessAwsTemplate: ArchitectureTemplate = {
       type: 'editable',
       data: { label: 'HTTPS', edgeStyle: 'solid' },
       style: { stroke: '#3B82F6', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#3B82F6' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#3B82F6' },
     },
     
     // CloudFront → S3
@@ -200,7 +201,7 @@ export const serverlessAwsTemplate: ArchitectureTemplate = {
       type: 'editable',
       data: { label: 'Cache', edgeStyle: 'solid' },
       style: { stroke: '#3B82F6', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#3B82F6' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#3B82F6' },
     },
     
     // CloudFront → API Gateway
@@ -211,7 +212,7 @@ export const serverlessAwsTemplate: ArchitectureTemplate = {
       type: 'editable',
       data: { label: 'API Calls', edgeStyle: 'solid' },
       style: { stroke: '#3B82F6', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#3B82F6' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#3B82F6' },
     },
     
     // API Gateway → Lambda Functions
@@ -222,7 +223,7 @@ export const serverlessAwsTemplate: ArchitectureTemplate = {
       type: 'editable',
       data: { label: '/auth', edgeStyle: 'solid' },
       style: { stroke: '#3B82F6', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#3B82F6' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#3B82F6' },
     },
     {
       id: 'e-api-users',
@@ -231,7 +232,7 @@ export const serverlessAwsTemplate: ArchitectureTemplate = {
       type: 'editable',
       data: { label: '/users', edgeStyle: 'solid' },
       style: { stroke: '#3B82F6', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#3B82F6' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#3B82F6' },
     },
     {
       id: 'e-api-orders',
@@ -240,7 +241,7 @@ export const serverlessAwsTemplate: ArchitectureTemplate = {
       type: 'editable',
       data: { label: '/orders', edgeStyle: 'solid' },
       style: { stroke: '#3B82F6', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#3B82F6' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#3B82F6' },
     },
     
     // Lambda → DynamoDB
@@ -251,7 +252,7 @@ export const serverlessAwsTemplate: ArchitectureTemplate = {
       type: 'editable',
       data: { label: 'Query', edgeStyle: 'solid' },
       style: { stroke: '#3B82F6', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#3B82F6' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#3B82F6' },
     },
     {
       id: 'e-orders-db',
@@ -260,7 +261,7 @@ export const serverlessAwsTemplate: ArchitectureTemplate = {
       type: 'editable',
       data: { label: 'Query', edgeStyle: 'solid' },
       style: { stroke: '#3B82F6', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#3B82F6' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#3B82F6' },
     },
     
     // Lambda → SQS (Async)
@@ -272,7 +273,7 @@ export const serverlessAwsTemplate: ArchitectureTemplate = {
       animated: true,
       data: { label: 'Send Message', edgeStyle: 'dashed' },
       style: { stroke: '#FF5722', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#FF5722' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#FF5722' },
     },
     
     // SQS → Lambda Notifications
@@ -284,7 +285,7 @@ export const serverlessAwsTemplate: ArchitectureTemplate = {
       animated: true,
       data: { label: 'Trigger', edgeStyle: 'dashed' },
       style: { stroke: '#FF5722', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#FF5722' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#FF5722' },
     },
     
     // Lambda Notifications → SNS
@@ -296,7 +297,7 @@ export const serverlessAwsTemplate: ArchitectureTemplate = {
       animated: true,
       data: { label: 'Publish', edgeStyle: 'dashed' },
       style: { stroke: '#FF5722', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#FF5722' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#FF5722' },
     },
   ],
 };

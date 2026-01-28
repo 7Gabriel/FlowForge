@@ -1,4 +1,5 @@
 import { ArchitectureTemplate, TemplateCategory } from '../template-types';
+import { MarkerType } from 'reactflow';
 
 export const eventDrivenKafkaTemplate: ArchitectureTemplate = {
   id: 'event-driven-kafka',
@@ -170,7 +171,7 @@ export const eventDrivenKafkaTemplate: ArchitectureTemplate = {
       animated: true,
       data: { label: 'Publish', edgeStyle: 'dashed' },
       style: { stroke: '#FF5722', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#FF5722' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#FF5722' },
     },
     {
       id: 'e-order-topic',
@@ -180,7 +181,7 @@ export const eventDrivenKafkaTemplate: ArchitectureTemplate = {
       animated: true,
       data: { label: 'Publish', edgeStyle: 'dashed' },
       style: { stroke: '#FF5722', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#FF5722' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#FF5722' },
     },
     {
       id: 'e-payment-topic',
@@ -190,7 +191,7 @@ export const eventDrivenKafkaTemplate: ArchitectureTemplate = {
       animated: true,
       data: { label: 'Publish', edgeStyle: 'dashed' },
       style: { stroke: '#FF5722', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#FF5722' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#FF5722' },
     },
     
     // Topics → Consumers
@@ -202,7 +203,7 @@ export const eventDrivenKafkaTemplate: ArchitectureTemplate = {
       animated: true,
       data: { label: 'Subscribe', edgeStyle: 'dashed' },
       style: { stroke: '#4CAF50', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#4CAF50' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#4CAF50' },
     },
     {
       id: 'e-order-notification',
@@ -212,7 +213,7 @@ export const eventDrivenKafkaTemplate: ArchitectureTemplate = {
       animated: true,
       data: { label: 'Subscribe', edgeStyle: 'dashed' },
       style: { stroke: '#4CAF50', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#4CAF50' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#4CAF50' },
     },
     {
       id: 'e-order-inventory',
@@ -222,7 +223,7 @@ export const eventDrivenKafkaTemplate: ArchitectureTemplate = {
       animated: true,
       data: { label: 'Subscribe', edgeStyle: 'dashed' },
       style: { stroke: '#4CAF50', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#4CAF50' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#4CAF50' },
     },
     {
       id: 'e-payment-notification',
@@ -232,7 +233,7 @@ export const eventDrivenKafkaTemplate: ArchitectureTemplate = {
       animated: true,
       data: { label: 'Subscribe', edgeStyle: 'dashed' },
       style: { stroke: '#4CAF50', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#4CAF50' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#4CAF50' },
     },
     
     // Consumers → Databases
@@ -243,7 +244,7 @@ export const eventDrivenKafkaTemplate: ArchitectureTemplate = {
       type: 'editable',
       data: { label: 'Insert', edgeStyle: 'solid' },
       style: { stroke: '#3B82F6', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#3B82F6' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#3B82F6' },
     },
     {
       id: 'e-inventory-db',
@@ -252,7 +253,7 @@ export const eventDrivenKafkaTemplate: ArchitectureTemplate = {
       type: 'editable',
       data: { label: 'Update', edgeStyle: 'solid' },
       style: { stroke: '#3B82F6', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#3B82F6' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#3B82F6' },
     },
   ],
 };

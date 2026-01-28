@@ -1,4 +1,5 @@
 import { ArchitectureTemplate, TemplateCategory } from '../template-types';
+import { MarkerType } from 'reactflow';
 
 export const cqrsPatternTemplate: ArchitectureTemplate = {
   id: 'cqrs-pattern',
@@ -150,7 +151,7 @@ export const cqrsPatternTemplate: ArchitectureTemplate = {
       type: 'editable',
       data: { label: 'HTTPS', edgeStyle: 'solid' },
       style: { stroke: '#3B82F6', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#3B82F6' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#3B82F6' },
     },
     
     // API Gateway → Command Handler (Write)
@@ -161,7 +162,7 @@ export const cqrsPatternTemplate: ArchitectureTemplate = {
       type: 'editable',
       data: { label: 'Commands (POST/PUT/DELETE)', edgeStyle: 'solid' },
       style: { stroke: '#FF5722', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#FF5722' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#FF5722' },
     },
     
     // API Gateway → Query Handler (Read)
@@ -172,7 +173,7 @@ export const cqrsPatternTemplate: ArchitectureTemplate = {
       type: 'editable',
       data: { label: 'Queries (GET)', edgeStyle: 'solid' },
       style: { stroke: '#4CAF50', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#4CAF50' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#4CAF50' },
     },
     
     // Command Handler → Write DB
@@ -183,7 +184,7 @@ export const cqrsPatternTemplate: ArchitectureTemplate = {
       type: 'editable',
       data: { label: 'Persist', edgeStyle: 'solid' },
       style: { stroke: '#FF5722', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#FF5722' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#FF5722' },
     },
     
     // Command Handler → Event Store
@@ -194,7 +195,7 @@ export const cqrsPatternTemplate: ArchitectureTemplate = {
       type: 'editable',
       data: { label: 'Append Events', edgeStyle: 'solid' },
       style: { stroke: '#FFC107', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#FFC107' },
+      markerEnd: {type: MarkerType.ArrowClosed, color: '#FFC107' },
     },
     
     // Event Store → Event Bus
@@ -206,7 +207,7 @@ export const cqrsPatternTemplate: ArchitectureTemplate = {
       animated: true,
       data: { label: 'Publish', edgeStyle: 'dashed' },
       style: { stroke: '#FFC107', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#FFC107' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#FFC107' },
     },
     
     // Event Bus → Projection Service
@@ -218,7 +219,7 @@ export const cqrsPatternTemplate: ArchitectureTemplate = {
       animated: true,
       data: { label: 'Subscribe', edgeStyle: 'dashed' },
       style: { stroke: '#9C27B0', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#9C27B0' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#9C27B0' },
     },
     
     // Projection Service → Read DB
@@ -229,7 +230,7 @@ export const cqrsPatternTemplate: ArchitectureTemplate = {
       type: 'editable',
       data: { label: 'Update View', edgeStyle: 'solid' },
       style: { stroke: '#9C27B0', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#9C27B0' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#9C27B0' },
     },
     
     // Query Handler → Read DB
@@ -240,7 +241,7 @@ export const cqrsPatternTemplate: ArchitectureTemplate = {
       type: 'editable',
       data: { label: 'Query', edgeStyle: 'solid' },
       style: { stroke: '#4CAF50', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#4CAF50' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#4CAF50' },
     },
   ],
 };

@@ -1,4 +1,5 @@
 import { ArchitectureTemplate, TemplateCategory } from '../template-types';
+import { MarkerType } from 'reactflow';
 
 export const monolithToMicroservicesTemplate: ArchitectureTemplate = {
   id: 'monolith-to-microservices',
@@ -150,7 +151,7 @@ export const monolithToMicroservicesTemplate: ArchitectureTemplate = {
       type: 'editable',
       data: { label: 'HTTPS', edgeStyle: 'solid' },
       style: { stroke: '#3B82F6', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#3B82F6' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#3B82F6' },
     },
     
     // API Gateway → Monolith (legacy routes)
@@ -161,7 +162,7 @@ export const monolithToMicroservicesTemplate: ArchitectureTemplate = {
       type: 'editable',
       data: { label: 'Legacy Routes', edgeStyle: 'dashed' },
       style: { stroke: '#FF5722', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#FF5722' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#FF5722' },
     },
     
     // API Gateway → New Microservices
@@ -172,7 +173,7 @@ export const monolithToMicroservicesTemplate: ArchitectureTemplate = {
       type: 'editable',
       data: { label: 'New Routes', edgeStyle: 'solid' },
       style: { stroke: '#4CAF50', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#4CAF50' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#4CAF50' },
     },
     
     {
@@ -182,7 +183,7 @@ export const monolithToMicroservicesTemplate: ArchitectureTemplate = {
       type: 'editable',
       data: { label: 'New Routes', edgeStyle: 'solid' },
       style: { stroke: '#4CAF50', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#4CAF50' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#4CAF50' },
     },
     
     // Monolith → Monolith DB
@@ -193,7 +194,7 @@ export const monolithToMicroservicesTemplate: ArchitectureTemplate = {
       type: 'editable',
       data: { label: 'SQL', edgeStyle: 'solid' },
       style: { stroke: '#FF5722', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#FF5722' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#FF5722' },
     },
     
     // Microservices → Databases
@@ -204,7 +205,7 @@ export const monolithToMicroservicesTemplate: ArchitectureTemplate = {
       type: 'editable',
       data: { label: 'SQL', edgeStyle: 'solid' },
       style: { stroke: '#4CAF50', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#4CAF50' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#4CAF50' },
     },
     
     {
@@ -214,7 +215,7 @@ export const monolithToMicroservicesTemplate: ArchitectureTemplate = {
       type: 'editable',
       data: { label: 'NoSQL', edgeStyle: 'solid' },
       style: { stroke: '#4CAF50', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#4CAF50' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#4CAF50' },
     },
     
     // Anti-Corruption Layer connections
@@ -225,7 +226,7 @@ export const monolithToMicroservicesTemplate: ArchitectureTemplate = {
       type: 'editable',
       data: { label: 'Sync Data', edgeStyle: 'dashed' },
       style: { stroke: '#FFC107', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#FFC107' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#FFC107' },
     },
     
     {
@@ -235,7 +236,7 @@ export const monolithToMicroservicesTemplate: ArchitectureTemplate = {
       type: 'editable',
       data: { label: 'Transform', edgeStyle: 'dashed' },
       style: { stroke: '#FFC107', strokeWidth: 3 },
-      markerEnd: { type: 'arrowclosed' as const, color: '#FFC107' },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#FFC107' },
     },
   ],
 };
