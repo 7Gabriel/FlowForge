@@ -1,10 +1,13 @@
 import { ArchitectureTemplate, TemplateCategory } from './template-types';
 import { microservicesEcommerceTemplate } from './templates/microservices-ecommerce';
 import { eventDrivenKafkaTemplate } from './templates/event-driven-kafka';
+import { serverlessAwsTemplate } from './templates/serverless-aws';
 
+// Template registry with three templates
 export const templateRegistry: ArchitectureTemplate[] = [
   microservicesEcommerceTemplate,
   eventDrivenKafkaTemplate,
+  serverlessAwsTemplate,
 ];
 
 export function getTemplateById(id: string): ArchitectureTemplate | undefined {
