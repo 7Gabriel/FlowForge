@@ -1,6 +1,9 @@
 import { ArchitectureTemplate, TemplateCategory } from './template-types';
+import { microservicesEcommerceTemplate } from './templates/microservices-ecommerce';
 
-export const templateRegistry: ArchitectureTemplate[] = [];
+export const templateRegistry: ArchitectureTemplate[] = [
+  microservicesEcommerceTemplate,
+];
 
 export function getTemplateById(id: string): ArchitectureTemplate | undefined {
   return templateRegistry.find((t) => t.id === id);
