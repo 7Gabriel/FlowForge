@@ -41,7 +41,9 @@ import { getGroupTemplate } from '@/lib/architecture/group-templates';
 import { C4NodeCategory, GroupStyle, C4VisualStyle } from '@/lib/architecture/c4-types';
 import { useAppMode } from '@/contexts/AppModeContext';
 import { AppMode } from '@/lib/types';
-import { useClipboard } from '@/contexts/ClipboardContext'; // ⚠️ NOVO IMPORT
+import { useClipboard } from '@/contexts/ClipboardContext';
+import { useHistory } from '@/contexts/HistoryContext';
+
 
 const nodeTypes: NodeTypes = {
   // Workflow nodes
@@ -92,9 +94,11 @@ export function WorkflowCanvas() {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
   const { mode } = useAppMode();
-  const { copyNodes, cutNodes, pasteNodes, hasCopiedNodes } = useClipboard(); // ⚠️ NOVO HOOK
+  const { copyNodes, cutNodes, pasteNodes, hasCopiedNodes } = useClipboard();
+  const { pushState, clearHistory } = useHistory();
 
   useEffect(() => {
+    
     const handleNodeHighlight = (event: any) => {
       const { nodeId, status } = event.detail;
       
@@ -164,6 +168,16 @@ export function WorkflowCanvas() {
       window.removeEventListener('architecture:highlight-edge', handleEdgeHighlight as EventListener);
     };
   }, [setNodes, setEdges]);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (nodes.length > 0 || edges.length > 0) {
+        pushState(nodes, edges);
+      }
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [nodes, edges, pushState]);
 
   const onConnect: OnConnect = useCallback(
     (connection: Connection) => {
