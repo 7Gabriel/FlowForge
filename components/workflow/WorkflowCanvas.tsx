@@ -44,20 +44,16 @@ import { AppMode } from '@/lib/types';
 import { useClipboard } from '@/contexts/ClipboardContext';
 import { useHistory } from '@/contexts/HistoryContext';
 
-
 const nodeTypes: NodeTypes = {
-  // Workflow nodes
   [NodeType.TRIGGER]: TriggerNode,
   [NodeType.LLM]: LLMNode,
   [NodeType.HTTP]: HTTPNode,
   [NodeType.CONDITION]: ConditionNode,
   [NodeType.OUTPUT]: OutputNode,
   
-  // Architecture nodes
   'architecture': C4Node,
   'group': GroupNode,
   
-  // C4 Model visual styles
   'person': PersonNode,
   'external-system': ExternalSystemNode,
   'container-web': ContainerWebNode,
@@ -95,10 +91,13 @@ export function WorkflowCanvas() {
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
   const { mode } = useAppMode();
   const { copyNodes, cutNodes, pasteNodes, hasCopiedNodes } = useClipboard();
-  const { pushState, clearHistory } = useHistory();
+  const { pushState, clearHistory, undo, redo, canUndo, canRedo } = useHistory(); // ✅ COMPLETO
 
   useEffect(() => {
-    
+    reactFlowWrapper.current?.focus();
+  }, []);
+
+  useEffect(() => {
     const handleNodeHighlight = (event: any) => {
       const { nodeId, status } = event.detail;
       
@@ -181,7 +180,6 @@ export function WorkflowCanvas() {
 
   const onConnect: OnConnect = useCallback(
     (connection: Connection) => {
-      console.log('✅ Connection created');
       
       const newEdge = {
         ...connection,
@@ -237,7 +235,6 @@ export function WorkflowCanvas() {
       event.preventDefault();
   
       if (!reactFlowInstance) {
-        console.error('❌ ReactFlow instance not ready');
         return;
       }
   
@@ -245,7 +242,6 @@ export function WorkflowCanvas() {
       const dragType = event.dataTransfer.getData('nodeType');
   
       if (!nodeType) {
-        console.error('❌ No nodeType found');
         return;
       }
   
@@ -259,7 +255,6 @@ export function WorkflowCanvas() {
       if (dragType === 'group') {
         const template = getGroupTemplate(nodeType as GroupStyle);
         if (!template) {
-          console.error('❌ Group template not found:', nodeType);
           return;
         }
   
@@ -285,7 +280,6 @@ export function WorkflowCanvas() {
       } else if (dragType === 'architecture') {
         const template = getC4Template(nodeType as C4NodeCategory);
         if (!template) {
-          console.error('❌ Architecture template not found:', nodeType);
           return;
         }
   
@@ -351,7 +345,6 @@ export function WorkflowCanvas() {
       } else {
         const template = getNodeTemplate(nodeType as NodeType);
         if (!template) {
-          console.error('❌ Workflow template not found:', nodeType);
           return;
         }
   
@@ -372,19 +365,15 @@ export function WorkflowCanvas() {
   );
 
   const onNodesDelete = useCallback((deleted: Node[]) => {
-    console.log('🗑️ Nodes deleted:', deleted);
   }, []);
 
   const onEdgesDelete = useCallback((deleted: Edge[]) => {
-    console.log('🗑️ Edges deleted:', deleted);
   }, []);
 
-  // ⚠️ ATUALIZADO: handleKeyDown com Copy/Cut/Paste
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
       const isCtrlOrCmd = event.ctrlKey || event.metaKey;
       
-      // Ignore if user is typing in an input/textarea
       const target = event.target as HTMLElement;
       if (
         target.tagName === 'INPUT' ||
@@ -393,11 +382,39 @@ export function WorkflowCanvas() {
       ) {
         return;
       }
+      if (isCtrlOrCmd && event.key === 'z' && !event.shiftKey) {
+        event.preventDefault();
+        console.log('↩️ Undo triggered - canUndo:', canUndo);
+        
+        const previousState = undo();
+        if (previousState) {
+          console.log('✅ Restoring previous state');
+          setNodes(previousState.nodes);
+          setEdges(previousState.edges);
+        } else {
+          console.log('❌ No previous state available');
+        }
+        return;
+      }
+
+      if (isCtrlOrCmd && (event.key === 'y' || (event.key === 'z' && event.shiftKey))) {
+        event.preventDefault();
+        console.log('↪️ Redo triggered - canRedo:', canRedo);
+        
+        const nextState = redo();
+        if (nextState) {
+          console.log('✅ Restoring next state');
+          setNodes(nextState.nodes);
+          setEdges(nextState.edges);
+        } else {
+          console.log('❌ No next state available');
+        }
+        return;
+      }
 
       const selectedNodes = nodes.filter((node) => node.selected);
       const selectedEdges = edges.filter((edge) => edge.selected);
 
-      // DELETE / BACKSPACE
       if (event.key === 'Delete' || event.key === 'Backspace') {
         event.preventDefault();
         
@@ -412,14 +429,12 @@ export function WorkflowCanvas() {
         }
       }
 
-      // CTRL+C - Copy
       if (isCtrlOrCmd && event.key === 'c' && selectedNodes.length > 0) {
         event.preventDefault();
         console.log('📋 Copy shortcut triggered');
         copyNodes(selectedNodes);
       }
 
-      // CTRL+X - Cut
       if (isCtrlOrCmd && event.key === 'x' && selectedNodes.length > 0) {
         event.preventDefault();
         console.log('✂️ Cut shortcut triggered');
@@ -428,7 +443,6 @@ export function WorkflowCanvas() {
         });
       }
 
-      // CTRL+V - Paste
       if (isCtrlOrCmd && event.key === 'v' && hasCopiedNodes) {
         event.preventDefault();
         console.log('📄 Paste shortcut triggered');
@@ -442,7 +456,6 @@ export function WorkflowCanvas() {
         }
       }
 
-      // CTRL+A - Select All
       if (isCtrlOrCmd && event.key === 'a') {
         event.preventDefault();
         console.log('🔘 Select All triggered');
@@ -450,7 +463,6 @@ export function WorkflowCanvas() {
         setEdges((eds) => eds.map((edge) => ({ ...edge, selected: true })));
       }
 
-      // CTRL+D - Duplicate
       if (isCtrlOrCmd && event.key === 'd' && selectedNodes.length > 0) {
         event.preventDefault();
         console.log('📑 Duplicate shortcut triggered');
@@ -466,7 +478,7 @@ export function WorkflowCanvas() {
         }
       }
     },
-    [nodes, edges, setNodes, setEdges, copyNodes, cutNodes, pasteNodes, hasCopiedNodes]
+    [nodes, edges, setNodes, setEdges, copyNodes, cutNodes, pasteNodes, hasCopiedNodes, undo, redo, canUndo, canRedo] // ✅ TODAS AS DEPENDENCIES
   );
 
   return (
@@ -477,6 +489,7 @@ export function WorkflowCanvas() {
       onDragOver={onDragOver}
       tabIndex={0}
       onKeyDown={handleKeyDown as any}
+      onClick={() => reactFlowWrapper.current?.focus()}
     >
       <ReactFlow
         nodes={nodes}
